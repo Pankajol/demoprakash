@@ -1,3 +1,45 @@
+// {
+//   "compilerOptions": {
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": [
+//         "src/*"
+//       ]
+//     },
+//     "target": "ES2017",
+//     "lib": [
+//       "dom",
+//       "dom.iterable",
+//       "esnext"
+//     ],
+//     "allowJs": true,
+//     "skipLibCheck": true,
+//     "strict": false,
+//     "noEmit": true,
+//     "incremental": true,
+//     "module": "esnext",
+//     "esModuleInterop": true,
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "jsx": "preserve",
+//     "plugins": [
+//       {
+//         "name": "next"
+//       }
+//     ]
+//     // ... other options
+//   },
+//   "include": [
+//     "**/*.ts",
+//     "**/*.tsx",
+//     "next-env.d.ts",
+//     ".next/types/**/*.ts"
+// , "src/middleware.js"  ],
+//   "exclude": [
+//     "node_modules"
+//   ]
+// }
 {
   "compilerOptions": {
     "baseUrl": ".",
@@ -13,7 +55,6 @@
       "esnext"
     ],
     "allowJs": true,
-    
     "skipLibCheck": true,
     "strict": false,
     "noEmit": true,
@@ -29,15 +70,16 @@
         "name": "next"
       }
     ]
-    // ... other options
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
+    "src/middleware.js",
     ".next/types/**/*.ts"
-, "src/middleware.js"  ],
+, "src/app/(dashboard)/company/month-trasactions/details/page.js"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next"
   ]
 }
