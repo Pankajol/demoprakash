@@ -9,9 +9,9 @@ import webpPool from "@/lib/db";
  * PUT /api/user-update/:id
  * Updates a user's details (username, companyID, phone, optional password)
  */
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request,context: { params: { id: string } }) {
   // await params to comply with Next.js 15 async dynamic API requirement
-  const { id } = await params;
+  const { id } = context.params
   let body: any;
   try {
     body = await request.json();
