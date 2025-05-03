@@ -4,26 +4,65 @@ declare global {
   var _mssqlPoolPromise: Promise<ConnectionPool> | undefined;
 }
 
-// Build a connection string using a named instance.
-// Make sure to use double backslashes to escape the backslash.
-// const connectionString = 'Server=LAPTOP-SIFBVD7R;Database=webpPlus;User Id=sa;Password=pankaj@2027;Encrypt=False;Connection Timeout=15';
-const connectionString = 'Server=103.21.58.192;Database=indusjys_webpPlus;User Id=db_aa88c8_pplus_admin;Password=?73E08xkq;Encrypt=False;Connection Timeout=15';
+const config: sql.config = {
+  user: 'db_aa88c8_pplus_admin',
+  password: '?73E08xkq',
+  server: '103.21.58.192', // Public IP
+  database: 'indusjys_webpPlus',
+  port: 1433,
+  options: {
+    encrypt: false, // set to true if using Azure or SSL
+    trustServerCertificate: true, // useful for development/self-signed certs
+  },
+  connectionTimeout: 15000,
+};
 
 const webpPool: Promise<ConnectionPool> =
   global._mssqlPoolPromise ||
-  new ConnectionPool(connectionString)
+  new sql.ConnectionPool(config)
     .connect()
     .then((pool) => {
-      console.log('Connected to MSSQL using Windows Authentication');
+      console.log('✅ Connected to MSSQL');
       global._mssqlPoolPromise = Promise.resolve(pool);
       return pool;
     })
     .catch((err) => {
-      console.error('Database Connection Failed! Check configuration.', err);
+      console.error('❌ Database Connection Failed!', err);
       throw err;
     });
 
 export default webpPool;
+
+
+
+
+
+// import sql, { ConnectionPool } from 'mssql';
+
+// declare global {
+//   var _mssqlPoolPromise: Promise<ConnectionPool> | undefined;
+// }
+
+// // Build a connection string using a named instance.
+// // Make sure to use double backslashes to escape the backslash.
+// // const connectionString = 'Server=LAPTOP-SIFBVD7R;Database=webpPlus;User Id=sa;Password=pankaj@2027;Encrypt=False;Connection Timeout=15';
+// const connectionString = 'Server=103.21.58.192;Database=indusjys_webpPlus;User Id=db_aa88c8_pplus_admin;Password=?73E08xkq;Encrypt=False;Connection Timeout=15';
+
+// const webpPool: Promise<ConnectionPool> =
+//   global._mssqlPoolPromise ||
+//   new ConnectionPool(connectionString)
+//     .connect()
+//     .then((pool) => {
+//       console.log('Connected to MSSQL using Windows Authentication');
+//       global._mssqlPoolPromise = Promise.resolve(pool);
+//       return pool;
+//     })
+//     .catch((err) => {
+//       console.error('Database Connection Failed! Check configuration.', err);
+//       throw err;
+//     });
+
+// export default webpPool;
 
 
 
