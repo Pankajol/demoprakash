@@ -15,7 +15,9 @@ export default function TablesList() {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         const data = await res.json();
+        console.log(data);
         setTablesData(data.tables);
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -36,8 +38,8 @@ export default function TablesList() {
         {tablesData.map((table, idx) => (
           <li key={idx} style={{ marginBottom: '1rem' }}>
             <strong>{table.TableName}</strong>
-            <div>Constraint Name: {table.UsrDate}</div>
-            <div>Query: {table.CrAmt}</div>
+            <div>User Name: {table.UsrName}</div>
+            <div>Access_GrpId: {table.Access_GrpId}</div>
           </li>
         ))}
       </ul>

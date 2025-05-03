@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const pool = await poolPromise;
     const result = await pool.request().query(`
-    SELECT * FROM [dbo].[vw_nBalSheet_Source]
+ select * from [dbo].[tbl_Users]
 
     `);
     return NextResponse.json({ tables: result.recordset });

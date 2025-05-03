@@ -1,5 +1,8 @@
+
 import './globals.css';
 import { ReactNode } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 export const metadata = {
   title: 'Demoprakash',
@@ -9,7 +12,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>{children}
+      <ToastContainer />
+      </body>
     </html>
   );
 }
