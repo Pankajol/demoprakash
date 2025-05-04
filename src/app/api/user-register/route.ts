@@ -1,27 +1,50 @@
 "use server";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import mssql from "mssql";
 import bcrypt from "bcryptjs";
-import webpPool from "@/lib/db"; // Adjust path as needed
+import { jwtVerify } from 'jose';
+import webpPool from '@/lib/db'; // Adjust path as needed
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+
+/**
+ * Extracts and returns the companyID directly from the JWT payload
+ */
+async function getCompanyIdFromToken(req: NextRequest) {
+  const token = req.cookies.get('token')?.value;
+  if (!token) throw new Error('Not authenticated');
+  const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+  const id = payload.id as number;
+  if (!id) throw new Error('Company ID not found in token');
+  return id;
+}
 
 /**
  * GET /api/user-register
- * Fetch all users with id, username, companyID, phone, and status
+ * Fetch all users scoped to the authenticated company
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // 1) Get authenticated company ID from token
+    const companyID = await getCompanyIdFromToken(request);
+
+    // 2) Fetch users scoped to this company
     const pool = await webpPool;
     const result = await pool
       .request()
+      .input('companyID', mssql.Int, companyID)
       .query(`
         SELECT
-          UserID   AS id,
-          Username AS username,
-          CompanyID AS companyID,
-          Phone    AS phone,
-          Status   AS status
-        FROM [dbo].[tbl_Users]
+          u.UserID      AS id,
+          u.Username    AS username,
+          c.CompanyCode AS companyCode,
+          u.Phone       AS phone,
+          u.Status      AS status
+        FROM dbo.tbl_Users u
+        JOIN dbo.tbl_Companies c
+          ON u.CompanyID = c.CompanyID
+        WHERE u.CompanyID = @companyID
       `);
 
     return NextResponse.json({ users: result.recordset });
@@ -33,9 +56,9 @@ export async function GET() {
 
 /**
  * POST /api/user-register
- * Register a new user: hash password and insert record
+ * Register a new user under the authenticated company: hash password and insert record
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   let body: any;
   try {
     body = await request.json();
@@ -44,8 +67,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON body provided." }, { status: 400 });
   }
 
-  const { username, companyID, phone, password, confirmPassword } = body;
-  if (!username || !companyID || !password || !confirmPassword) {
+  const { username, phone, password, confirmPassword } = body;
+  if (!username || !phone || !password || !confirmPassword) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
   if (password !== confirmPassword) {
@@ -53,27 +76,52 @@ export async function POST(request: Request) {
   }
 
   try {
+    
+    const token = request.cookies.get('token')?.value;
+    if (!token) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    const { payload }: any = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+    const companyID = payload.id;
+    const companyCode = payload.companyCode;
+
+    if (!companyID || !companyCode) {
+      return NextResponse.json({ error: "Invalid token payload." }, { status: 400 });
+    }
+
+
+
+
+    // 1) Decode token to get CompanyID
+    // const companyID = await getCompanyIdFromToken(request);
+
+    // 2) Hash password
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
+
+
+    // 3) Insert user record under this company
     const pool = await webpPool;
     await pool
       .request()
       .input("Username", mssql.NVarChar(255), username)
-      .input("CompanyID", mssql.Int, Number(companyID))
+      .input("CompanyID", mssql.Int, companyID)
       .input("Phone", mssql.NVarChar(50), phone)
       .input("PasswordHash", mssql.NVarChar(255), passwordHash)
+      .input("companyCode", mssql.NVarChar(50), payload.companyCode)
       .query(
-        `INSERT INTO [dbo].[tbl_Users]
-           (Username, CompanyID, Phone, PasswordHash, CreatedAt, UpdatedAt, Status)
+        `INSERT INTO dbo.tbl_Users
+           (Username, CompanyID, Phone, PasswordHash, CreatedAt, UpdatedAt, Status,companyCode)
          VALUES
-           (@Username, @CompanyID, @Phone, @PasswordHash, GETDATE(), GETDATE(), 1)`
+           (@Username, @CompanyID, @Phone, @PasswordHash, GETDATE(), GETDATE(), 1,@companyCode)`
       );
 
     return NextResponse.json({ message: "User registered successfully" }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("[API:user-register:POST] Registration error:", error);
-    return NextResponse.json({ error: "Registration failed." }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Registration failed." }, { status: 500 });
   }
 }
 

@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 
+import WhoAmI from '@/components/WhoAmI';
 export const metadata = {
   title: 'Demoprakash',
   description: 'Production Ready Next.js App with MSSQL Integration',

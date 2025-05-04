@@ -2,7 +2,7 @@
 "use client"
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import TransactionsChart from '@/components/TransactionsChart copy'
+import TransactionsChart from '@/components/TransactionsChart'
 
 const UserDashboard: React.FC = () => {
   const router = useRouter();

@@ -88,7 +88,14 @@ const TransactionsChart: React.FC = () => {
     try {
       const fromDateStr = fromDate.toISOString().split('T')[0];
       const toDateStr = toDate.toISOString().split('T')[0];
-      const response = await fetch(`/api/transactions?fromDate=${fromDateStr}&toDate=${toDateStr}`);
+      const token = localStorage.getItem('token'); // Or from cookies, session, etc.
+
+const response = await fetch(`/api/transactions?fromDate=2025-05-03&toDate=2025-05-03`, {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+  },
+});
+      // const response = await fetch(`/api/transactions?fromDate=${fromDateStr}&toDate=${toDateStr}`);
       const data = await response.json();
       setTransactions(Array.isArray(data) ? data : []);
     } catch (error) {

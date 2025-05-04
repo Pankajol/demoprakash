@@ -1,38 +1,96 @@
-// /api/party/route.ts
+
+'use server';
+
 import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
 import webpPool from '@/lib/db';
 
 export async function GET(req: NextRequest) {
+  const JWT_SECRET = process.env.JWT_SECRET!;
+
+  // 1. Authenticate via JWT cookie
+  const token = req.cookies.get('token')?.value;
+  if (!token) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  }
+
+  let payload: any;
+  try {
+    ({ payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(JWT_SECRET)
+    ));
+  } catch (err) {
+    return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+  }
+
+  // 2. Query distinct parties for this company
   try {
     const pool = await webpPool;
-    const result = await pool
-      .request()
+    const result = await pool.request()
+      .input('companyCode', payload.companyCode)
       .query(`
         SELECT DISTINCT
           PartyCode,
           Party
-        FROM [dbo].[DailyTransImport]
-       
-        ORDER BY Party,PartyCode;
+        FROM dbo.DailyTransImport
+        WHERE companyCode = @companyCode
+        ORDER BY Party, PartyCode;
       `);
 
-    const partyOptions = result.recordset.map((row: {
-      PartyCode: string;
-      Party: string;
-    }) => ({
-      value:   `${row.PartyCode} + ${row.Party}`,
-      label:  `${row.PartyCode} - ${row.Party}`,  
+    const partyOptions = result.recordset.map((row: { PartyCode: string; Party: string }) => ({
+      value: `${row.PartyCode} + ${row.Party}`,
+      label: `${row.PartyCode} - ${row.Party}`,
     }));
 
     return NextResponse.json(partyOptions);
-  } catch (err) {
-    console.error('Error fetching party list:', err);
+  } catch (err: any) {
+    console.error('[PARTY_LIST_ERROR]', err);
     return NextResponse.json(
       { error: 'Failed to fetch party list' },
       { status: 500 }
     );
   }
 }
+
+
+
+
+// // /api/party/route.ts
+// import { NextRequest, NextResponse } from 'next/server';
+// import webpPool from '@/lib/db';
+
+// export async function GET(req: NextRequest) {
+//   try {
+//     const pool = await webpPool;
+//     const result = await pool
+//       .request()
+//       .query(`
+//         SELECT DISTINCT
+//           PartyCode,
+//           Party
+//         FROM [dbo].[DailyTransImport]
+       
+//         ORDER BY Party,PartyCode;
+//       `);
+
+//     const partyOptions = result.recordset.map((row: {
+//       PartyCode: string;
+//       Party: string;
+//     }) => ({
+//       value:   `${row.PartyCode} + ${row.Party}`,
+//       label:  `${row.PartyCode} - ${row.Party}`,  
+//     }));
+
+//     return NextResponse.json(partyOptions);
+//   } catch (err) {
+//     console.error('Error fetching party list:', err);
+//     return NextResponse.json(
+//       { error: 'Failed to fetch party list' },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 
 

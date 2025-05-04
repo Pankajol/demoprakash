@@ -1,3 +1,5 @@
+'use server';
+
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import mssql from 'mssql';
@@ -24,27 +26,43 @@ export async function POST(req: NextRequest) {
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(password, salt);
 
-      // Insert into Companies
-      const insertCompany = `
-        INSERT INTO [dbo].[tbl_Companies]
+      // 1) Insert the company & get back the new numeric ID
+      const insertSql = `
+        INSERT INTO dbo.tbl_Companies
           (CompanyName, Email, Phone, GSTNo, PasswordHash)
+        OUTPUT inserted.CompanyID
         VALUES
-          (@companyName, @email, @phone, @gstNo, @passwordHash);
-        SELECT SCOPE_IDENTITY() AS CompanyID;
+          (@cn, @em, @ph, @gst, @phash);
       `;
-      const companyResult = await pool.request()
-        .input('companyName', mssql.NVarChar(255), companyName)
-        .input('email',       mssql.NVarChar(255), email)
-        .input('phone',       mssql.NVarChar(50),  phone)
-        .input('gstNo',       mssql.NVarChar(50),  gstNo)
-        .input('passwordHash',mssql.NVarChar(255), passwordHash)
-        .query(insertCompany);
+      const insertResult = await pool.request()
+        .input('cn',    mssql.NVarChar(255), companyName)
+        .input('em',    mssql.NVarChar(255), email)
+        .input('ph',    mssql.NVarChar(50),  phone)
+        .input('gst',   mssql.NVarChar(50),  gstNo)
+        .input('phash', mssql.NVarChar(255), passwordHash)
+        .query(insertSql);
 
-      const newCompanyID = companyResult.recordset[0]?.CompanyID;
+      const newCompanyID = insertResult.recordset[0].CompanyID;
+      // 2) Generate the CompanyCode: comp + zero-padded 4-digit ID
+      const companyCode = 'comp' + String(newCompanyID).padStart(4, '0');
+
+      // 3) Update the newly inserted row with CompanyCode
+      const updateSql = `
+        UPDATE dbo.tbl_Companies
+        SET CompanyCode = @code
+        WHERE CompanyID = @id
+      `;
+      await pool.request()
+        .input('code', mssql.NVarChar(20), companyCode)
+        .input('id',   mssql.Int,          newCompanyID)
+        .query(updateSql);
+
+      // 4) Return success, new ID and code
       return NextResponse.json({
-        message: 'Company registration successful',
-        companyID: newCompanyID,
-      });
+        message:      'Company registration successful',
+        companyID:    newCompanyID,
+        companyCode:  companyCode
+      }, { status: 201 });
 
     } else if (type === 'user') {
       const { username, companyID, phone, password, confirmPassword } = data;
@@ -60,7 +78,7 @@ export async function POST(req: NextRequest) {
       // Verify company exists
       const checkCompany = `
         SELECT TOP 1 CompanyID
-        FROM [dbo].[tbl_Companies]
+        FROM dbo.tbl_Companies
         WHERE CompanyID = @companyID
       `;
       const companyCheck = await pool.request()
@@ -77,26 +95,26 @@ export async function POST(req: NextRequest) {
 
       // Insert into Users
       const insertUser = `
-        INSERT INTO [dbo].[tbl_Users]
+        INSERT INTO dbo.tbl_Users
           (Username, CompanyID, Phone, PasswordHash)
         VALUES
           (@username, @companyID, @phone, @passwordHash)
       `;
       await pool.request()
-        .input('username',     mssql.NVarChar(255), passwordHash /* fix: input order wrong? */)
+        .input('username',     mssql.NVarChar(255), username)
         .input('companyID',    mssql.Int,            companyID)
         .input('phone',        mssql.NVarChar(50),   phone)
         .input('passwordHash', mssql.NVarChar(255),  passwordHash)
         .query(insertUser);
 
-      return NextResponse.json({ message: 'User registration successful' });
+      return NextResponse.json({ message: 'User registration successful' }, { status: 201 });
 
     } else {
       return NextResponse.json({ error: 'Invalid registration type.' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Registration error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });
   }
 }
 
@@ -104,73 +122,100 @@ export async function POST(req: NextRequest) {
 
 
 // import { NextRequest, NextResponse } from 'next/server';
-// import bcrypt from "bcryptjs";
+// import bcrypt from 'bcryptjs';
+// import mssql from 'mssql';
 // import webpPool from '@/lib/db';
 
 // export async function POST(req: NextRequest) {
 //   try {
 //     const data = await req.json();
 //     const { type } = data; // 'company' or 'user'
-    
 //     const pool = await webpPool;
 
 //     if (type === 'company') {
 //       const { companyName, email, phone, gstNo, password, confirmPassword } = data;
-//       // Insert company data into tbl_Companies and return the new CompanyID.
-//       const query = `
-//         INSERT INTO [dbo].[tbl_Companies] 
-//           (CompanyName, Email, Phone, GSTNo, Password, ConfirmPassword)
-//         VALUES 
-//           (@companyName, @email, @phone, @gstNo, @password, @confirmPassword);
+
+//       // Basic validation
+//       if (!companyName || !email || !password || !confirmPassword) {
+//         return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
+//       }
+//       if (password !== confirmPassword) {
+//         return NextResponse.json({ error: 'Passwords do not match.' }, { status: 400 });
+//       }
+
+//       // Hash the password
+//       const salt = await bcrypt.genSalt(10);
+//       const passwordHash = await bcrypt.hash(password, salt);
+
+//       // Insert into Companies
+//       const insertCompany = `
+//         INSERT INTO [dbo].[tbl_Companies]
+//           (CompanyName, Email, Phone, GSTNo, PasswordHash)
+//         VALUES
+//           (@companyName, @email, @phone, @gstNo, @passwordHash);
 //         SELECT SCOPE_IDENTITY() AS CompanyID;
 //       `;
-//       const result = await pool.request()
-//         .input('companyName', companyName)
-//         .input('email', email)
-//         .input('phone', phone)
-//         .input('gstNo', gstNo)
-//         .input('password', password)
-//         .input('confirmPassword', confirmPassword)
-//         .query(query);
+//       const companyResult = await pool.request()
+//         .input('companyName', mssql.NVarChar(255), companyName)
+//         .input('email',       mssql.NVarChar(255), email)
+//         .input('phone',       mssql.NVarChar(50),  phone)
+//         .input('gstNo',       mssql.NVarChar(50),  gstNo)
+//         .input('passwordHash',mssql.NVarChar(255), passwordHash)
+//         .query(insertCompany);
 
+//       const newCompanyID = companyResult.recordset[0]?.CompanyID;
 //       return NextResponse.json({
 //         message: 'Company registration successful',
-//         companyID: result.recordset[0].CompanyID,
+//         companyID: newCompanyID,
 //       });
+
 //     } else if (type === 'user') {
 //       const { username, companyID, phone, password, confirmPassword } = data;
-      
-//       // Check if the provided companyID exists
-//       const checkQuery = `
-//         SELECT * FROM [dbo].[tbl_Companies]
+
+//       // Basic validation
+//       if (!username || companyID == null || !password || !confirmPassword) {
+//         return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
+//       }
+//       if (password !== confirmPassword) {
+//         return NextResponse.json({ error: 'Passwords do not match.' }, { status: 400 });
+//       }
+
+//       // Verify company exists
+//       const checkCompany = `
+//         SELECT TOP 1 CompanyID
+//         FROM [dbo].[tbl_Companies]
 //         WHERE CompanyID = @companyID
 //       `;
-//       const companyResult = await pool.request()
-//         .input('companyID', companyID)
-//         .query(checkQuery);
+//       const companyCheck = await pool.request()
+//         .input('companyID', mssql.Int, companyID)
+//         .query(checkCompany);
 
-//       if (companyResult.recordset.length === 0) {
-//         return NextResponse.json({ error: 'Invalid Company ID' }, { status: 400 });
+//       if (companyCheck.recordset.length === 0) {
+//         return NextResponse.json({ error: 'Invalid CompanyID.' }, { status: 400 });
 //       }
-      
-//       // Insert user data into tbl_Users.
-//       const insertQuery = `
+
+//       // Hash the password
+//       const salt = await bcrypt.genSalt(10);
+//       const passwordHash = await bcrypt.hash(password, salt);
+
+//       // Insert into Users
+//       const insertUser = `
 //         INSERT INTO [dbo].[tbl_Users]
-//           (Username, CompanyID, Phone, Password, ConfirmPassword)
-//         VALUES 
-//           (@username, @companyID, @phone, @password, @confirmPassword)
+//           (Username, CompanyID, Phone, PasswordHash)
+//         VALUES
+//           (@username, @companyID, @phone, @passwordHash)
 //       `;
 //       await pool.request()
-//         .input('username', username)
-//         .input('companyID', companyID)
-//         .input('phone', phone)
-//         .input('password', password)
-//         .input('confirmPassword', confirmPassword)
-//         .query(insertQuery);
+//         .input('username',     mssql.NVarChar(255), passwordHash /* fix: input order wrong? */)
+//         .input('companyID',    mssql.Int,            companyID)
+//         .input('phone',        mssql.NVarChar(50),   phone)
+//         .input('passwordHash', mssql.NVarChar(255),  passwordHash)
+//         .query(insertUser);
 
 //       return NextResponse.json({ message: 'User registration successful' });
+
 //     } else {
-//       return NextResponse.json({ error: 'Invalid registration type' }, { status: 400 });
+//       return NextResponse.json({ error: 'Invalid registration type.' }, { status: 400 });
 //     }
 //   } catch (error: any) {
 //     console.error('Registration error:', error);

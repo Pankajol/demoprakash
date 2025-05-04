@@ -18,35 +18,37 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     const payload =
       loginType === 'company'
         ? { type: 'company', email, password }
         : { type: 'user', username, password };
-
+  
     try {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',          // ← include this!
         body: JSON.stringify(payload),
       });
-
-      const data = await res.json();
-
+  
       if (!res.ok) {
-        toast.error(data.error || 'Login failed');
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Login failed');
         return;
       }
-
-      if (data.user && data.user.status === 0) {
+  
+      const data = await res.json();
+      if (data.user.status === 0) {
         toast.warning('Your account is inactive. Please contact support.');
         return;
       }
-
+  
+      // You can still store non-sensitive user info if desired:
       localStorage.setItem('user', JSON.stringify(data.user));
-
+  
       toast.success('Login successful!');
-      router.push(loginType === 'company' ? '/company' : '/user');
+      router.replace(loginType === 'company' ? '/company' : '/user');
     } catch (err) {
       console.error(err);
       toast.error('An unexpected error occurred');
@@ -54,6 +56,7 @@ const LoginPage: React.FC = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
