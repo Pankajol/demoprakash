@@ -5,11 +5,11 @@ declare global {
 }
 
 const config: sql.config = {
-  server:   process.env.NEXT_PUBLIC_DB_SERVER!,
+  server:   process.env.NEXT_PUBLIC_DB_SERVER! || '103.21.58.192',
   database: process.env.NEXT_PUBLIC_DB_DATABASE!,
   user:     process.env.DB_USER!,
   password: process.env.DB_PASSWORD!,
-  // port: 1433,
+
   options: {
     encrypt: false, // set to true if using Azure or SSL
     trustServerCertificate: true, // useful for development/self-signed certs
