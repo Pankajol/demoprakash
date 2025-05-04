@@ -9,7 +9,7 @@ const config: sql.config = {
   database: process.env.NEXT_PUBLIC_DB_DATABASE!,
   user:     process.env.DB_USER!,
   password: process.env.DB_PASSWORD!,
-  port: 1433,
+  // port: 1433,
   options: {
     encrypt: false, // set to true if using Azure or SSL
     trustServerCertificate: true, // useful for development/self-signed certs
