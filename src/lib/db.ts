@@ -6,9 +6,9 @@ declare global {
 
 const config: sql.config = {
   server:    '103.21.58.192',
-  database: process.env.NEXT_PUBLIC_DB_DATABASE!,
-  user:     process.env.DB_USER!,
-  password: process.env.DB_PASSWORD!,
+  database: 'indusjys_webpPlus',
+  user:     'db_aa88c8_pplus_admin',
+  password: '?73E08xkq',
   port:      1433,
   options: {
     encrypt: false, // set to true if using Azure or SSL
