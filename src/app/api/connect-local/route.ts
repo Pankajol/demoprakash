@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   const companyCode = await getCompanyCode(req);
   const { server, database, user, password } = await req.json();
 
-  const config = { server, database, user, password, options:{encrypt:false,trustServerCertificate:true} };
+  const config = { server, database, user, password, options:{encrypt:false,trustServerCertificate:false} };
   try {
     const pool = await sql.connect(config);
     await pool.close();
