@@ -68,11 +68,11 @@ async function getCompanyCode(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const companyCode = await getCompanyCode(req);
-  const { database, user, password } = await req.json();
+  const { server, database, user, password } = await req.json();
 
   // Named Pipes configuration: server must be local host, pipe path specified in options
   const cfg = {
-    server: 'localhost\\SQLEXPRESS',
+    server,
     database,
     user,
     password,
