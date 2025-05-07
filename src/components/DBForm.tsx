@@ -26,7 +26,8 @@ export default function DBForm({ onSuccess, onError }: DBFormProps) {
       });
       const result = await res.json();
       setLoading(false);
-
+     
+      
       if (res.ok) {
         onSuccess();
       } else {
