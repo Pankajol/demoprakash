@@ -56,6 +56,8 @@ import { getPoolForTenant } from '@/lib/lb';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
+const clientConfigs: Record<string, any> = {};
+
 async function getCompanyCode(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
   if (!token) throw new Error('Not authenticated');
@@ -97,3 +99,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export { clientConfigs };
