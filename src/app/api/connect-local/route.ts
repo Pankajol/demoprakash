@@ -86,10 +86,11 @@ export async function POST(req: NextRequest) {
     database: 'pPlus',
     user:     'sa',
     password: 'pankaj@2027',
+                     // default port for SQL Server
     options: {
       encrypt:                false,
       trustServerCertificate: true,
-      port:                   0,           // disable TCP
+      port:                   1433,           // disable TCP
       pipe:                   '\\\\.\\pipe\\MSSQL$SQLEXPRESS\\sql\\query'
     },
   };
