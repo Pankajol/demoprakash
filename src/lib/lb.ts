@@ -26,19 +26,19 @@
 // };
 
 
-import sql from 'mssql';
+// import sql from 'mssql';
 
-const config = {
-  user: 'sa',
-  password: 'pankaj@2027',
-  server: 'LAPTOP-SIFBVD7R', // or your IP or hostname
-  database: 'pPlus', // <-- This must match where your SP exists
-  options: {
-    encrypt: false, // true if using Azure
-    trustServerCertificate: true,
-  },
-};
-const poolPromise: Promise<sql.ConnectionPool> = sql.connect(config);
+// const config = {
+//   user: 'sa',
+//   password: 'pankaj@2027',
+//   server: 'LAPTOP-SIFBVD7R', // or your IP or hostname
+//   database: 'pPlus', // <-- This must match where your SP exists
+//   options: {
+//     encrypt: false, // true if using Azure
+//     trustServerCertificate: true,
+//   },
+// };
+// const poolPromise: Promise<sql.ConnectionPool> = sql.connect(config);
 // const poolPromise = new sql.ConnectionPool(config)
 //   .connect()
 //   .then(pool => {
@@ -47,5 +47,5 @@ const poolPromise: Promise<sql.ConnectionPool> = sql.connect(config);
 //   })
 //   .catch(err => console.error('Database Connection Failed! Bad Config: ', err));
 
-export default poolPromise;
+// export default poolPromise;
 
