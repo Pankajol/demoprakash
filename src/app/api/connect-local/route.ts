@@ -76,6 +76,7 @@ export async function POST(req: NextRequest) {
     database,
     user,
     password,
+    port:   1433,
     options: {
       encrypt:               false,    // local dev
       trustServerCertificate:true,
