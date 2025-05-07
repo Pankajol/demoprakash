@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "node server.js",
+    "lint": "next lint",
+    "export": "next build && next export"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.2",

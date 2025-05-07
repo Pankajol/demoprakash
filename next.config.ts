@@ -1,11 +1,17 @@
 // next.config.js
+
 const path = require('path');
+
+
 
 const nextConfig = {
   reactStrictMode: true,
+
+
   experimental: {
     appDir: true,
     turbopack: true,
+ 
   },
   webpack(config) {
     // Set alias for "~" and "@" to point to the src folder.
