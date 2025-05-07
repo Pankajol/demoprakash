@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
 
   // Named Pipes configuration: server must be local host, pipe path specified in options
   const cfg = {
-    server: 'localhost',
+    server: 'localhost\\SQLEXPRESS',
     database,
     user,
     password,
