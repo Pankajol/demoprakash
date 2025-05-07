@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
   const { server, database, user, password } = await req.json();
 
   const cfg = {
-    server,
+    server: '127.0.0.1',
     database,
     user,
     password,
