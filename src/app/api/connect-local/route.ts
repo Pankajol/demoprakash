@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
   const { server, database, user, password } = await req.json();
 
   const cfg = {
-    server: '127.0.0.1',
+    server: 'np:\\\\.\\pipe\\MSSQL$SQLEXPRESS\\sql\\query',
     database,
     user,
     password,
