@@ -55,9 +55,7 @@ import { jwtVerify } from 'jose';
 import { getPoolForTenant } from '@/lib/lb';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-
 const clientConfigs: Record<string, any> = {};
-
 async function getCompanyCode(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
   if (!token) throw new Error('Not authenticated');
@@ -70,27 +68,30 @@ async function getCompanyCode(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const companyCode = await getCompanyCode(req);
-  const { server, database, user, password } = await req.json();
+  const { database, user, password } = await req.json();
 
+  // Named Pipes configuration: server must be local host, pipe path specified in options
   const cfg = {
-    server: 'np:\\\\.\\pipe\\MSSQL$SQLEXPRESS\\sql\\query',
+    server: 'localhost',
     database,
     user,
     password,
     options: {
       encrypt: false,
-      trustServerCertificate: true, // often needed for local dev
+      trustServerCertificate: true,
+      pipe: `\\.\\pipe\\MSSQL$SQLEXPRESS\\sql\\query`, // direct named pipe path
+      port: 0, // disable TCP when using pipe
     },
   };
 
   try {
     // Attempt to get or create a pool
-    const pool = await getPoolForTenant(companyCode, cfg);
+    const pool = await getPoolForTenant(companyCode, cfg as any);
 
     // Simple test query
     await pool.request().query('SELECT 1');
 
-    return NextResponse.json({ message: 'Local DB connected' });
+    return NextResponse.json({ message: 'Local DB connected via named pipe' });
   } catch (err: any) {
     console.error('DB connection error:', err);
     return NextResponse.json(
@@ -99,5 +100,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
 
 export { clientConfigs };
