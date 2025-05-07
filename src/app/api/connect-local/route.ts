@@ -72,15 +72,25 @@ export async function POST(req: NextRequest) {
 
   // Named Pipes configuration: server must be local host, pipe path specified in options
   const cfg = {
-    server,
-    database,
-    user,
-    password,
-    port:   1433,
+    // server,
+    // database,
+    // user,
+    // password,
+    // port:   1433,
+    // options: {
+    //   encrypt:               false,    // local dev
+    //   trustServerCertificate:true,
+    //   instanceName:          'SQLEXPRESS', 
+
+    server: 'localhost',                   // resolvable host
+    database: 'pPlus',
+    user:     'sa',
+    password: 'pankaj@2027',
     options: {
-      encrypt:               false,    // local dev
-      trustServerCertificate:true,
-      instanceName:          'SQLEXPRESS', 
+      encrypt:                false,
+      trustServerCertificate: true,
+      port:                   0,           // disable TCP
+      pipe:                   '\\\\.\\pipe\\MSSQL$SQLEXPRESS\\sql\\query'
     },
   };
 
