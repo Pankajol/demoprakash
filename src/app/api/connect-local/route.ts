@@ -77,10 +77,9 @@ export async function POST(req: NextRequest) {
     user,
     password,
     options: {
-      encrypt: false,
-      trustServerCertificate: true,
-      pipe: `\\.\\pipe\\MSSQL$SQLEXPRESS\\sql\\query`, // direct named pipe path
-      port: 0, // disable TCP when using pipe
+      encrypt:               false,    // local dev
+      trustServerCertificate:true,
+      instanceName:          'SQLEXPRESS', 
     },
   };
 
