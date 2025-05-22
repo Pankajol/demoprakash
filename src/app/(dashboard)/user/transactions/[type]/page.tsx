@@ -135,7 +135,7 @@ const TransactionDetailsPage: React.FC = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium">Party (optional)</label>
             <Select
               options={partyOptions}
@@ -145,7 +145,7 @@ const TransactionDetailsPage: React.FC = () => {
               placeholder="Select party..."
               className="mt-1"
             />
-          </div>
+          </div> */}
 
           <div className="flex items-end">
             <button
@@ -277,6 +277,7 @@ const TransactionDetailsPage: React.FC = () => {
 };
 
 export default TransactionDetailsPage;
+
 
 
 

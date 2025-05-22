@@ -26,6 +26,7 @@ type TransactionSummary = {
   MyType: string;
   Nos: number;
   Net: number;
+  
 };
 
 const TransactionsChart: React.FC = () => {
@@ -88,14 +89,16 @@ const TransactionsChart: React.FC = () => {
     try {
       const fromDateStr = fromDate.toISOString().split('T')[0];
       const toDateStr = toDate.toISOString().split('T')[0];
-      const token = localStorage.getItem('token'); // Or from cookies, session, etc.
-
-const response = await fetch(`/api/transactions?fromDate=2025-05-03&toDate=2025-05-03`, {
-  headers: {
-    'Authorization': `Bearer ${token}`,
-  },
-});
       // const response = await fetch(`/api/transactions?fromDate=${fromDateStr}&toDate=${toDateStr}`);
+      // change every fetch to include credentials
+const response = await fetch(
+  `/api/transactions?fromDate=${fromDateStr}&toDate=${toDateStr}`,
+  {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' }
+  }
+);
       const data = await response.json();
       setTransactions(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -177,8 +180,9 @@ const response = await fetch(`/api/transactions?fromDate=2025-05-03&toDate=2025-
 
   return (
     <div>
-      <h2 className="mb-4 font-semibold text-xl">Dashboard</h2>
-       <DownloadPdfButton />
+      {/* <h2 className="mb-4 font-semibold text-xl">D</h2> */}
+      <h2 className="mb-4 font-semibold text-xl">Transactions Chart</h2>
+      {/* <DownloadPdfButton /> */}
       <div className="flex flex-wrap gap-4 mb-4">
         <div>
           <label>Select Year:&nbsp;</label>
@@ -203,7 +207,7 @@ const response = await fetch(`/api/transactions?fromDate=2025-05-03&toDate=2025-
           <DatePicker
             selected={fromDate}
             onChange={(date: Date | null) => date && setFromDate(date)}
-            dateFormat="yyyy-MM-dd"
+            dateFormat="dd-MM-yyyy"
           />
         </div>
 
@@ -212,7 +216,7 @@ const response = await fetch(`/api/transactions?fromDate=2025-05-03&toDate=2025-
           <DatePicker
             selected={toDate}
             onChange={(date: Date | null) => date && setToDate(date)}
-            dateFormat="yyyy-MM-dd"
+            dateFormat="dd-MM-yyyy"
           />
         </div>
       </div>
@@ -227,5 +231,3 @@ const response = await fetch(`/api/transactions?fromDate=2025-05-03&toDate=2025-
 };
 
 export default TransactionsChart;
-
-
