@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
 
   // 1. Extract and validate query params
   const myTypesParam = searchParams.get('myTypes');
-  const myTypes = myTypesParam ? myTypesParam.split(',') : ['Sale'];
+  const myTypes = myTypesParam ? myTypesParam.split(',') : [];
   const partyCode = searchParams.get('partyCode') ? decodeURIComponent(searchParams.get('partyCode')!) : null;
   const party     = searchParams.get('party') ? decodeURIComponent(searchParams.get('party')!) : null;
   const fromDate  = searchParams.get('fromDate') || '2023-04-01';
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
   }
 
   // 3. Build WHERE clauses
-  const conditions: string[] = ['(VAmt - AdjAmt) > 0', 'UsrDate >= @fromDate', 'UsrDate <= @toDate', 'companyCode = @companyCode'];
+  const conditions: string[] = ['(VAmt - AdjAmt) >= 0', 'UsrDate >= @fromDate', 'UsrDate <= @toDate', 'companyCode = @companyCode'];
   const pool = await webpPool;
   const request = pool.request()
     .input('fromDate', new Date(fromDate))
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
   }
   if (party) {
     conditions.push('Party LIKE @party');
-    request.input('party', `%${party}%`);
+    request.input('party', party);
   }
   if (myTypes.length) {
     const typeConds = myTypes.map((_, i) => `MyType = @type${i}`);
@@ -55,6 +55,14 @@ export async function GET(req: NextRequest) {
       request.input(`type${i}`, t);
     });
   }
+
+  if (myTypesParam) {
+  const typeConds = myTypes.map((_, i) => `MyType = @type${i}`);
+  conditions.push(`(${typeConds.join(' OR ')})`);
+  myTypes.forEach((t, i) => {
+    request.input(`type${i}`, t);
+  });
+}
 
   const sqlQuery = `
     SELECT DISTINCT PartyCode, Party
@@ -66,10 +74,15 @@ export async function GET(req: NextRequest) {
   // 4. Execute query
   try {
     const result = await request.query(sqlQuery);
+    // const partyOptions = result.recordset.map((row: { PartyCode: string; Party: string }) => ({
+    //   value: row.PartyCode,
+    //   label: `${row.PartyCode} - ${row.Party}`
+    // }));
+
     const partyOptions = result.recordset.map((row: { PartyCode: string; Party: string }) => ({
-      value: row.PartyCode,
-      label: `${row.PartyCode} - ${row.Party}`
-    }));
+  value: row.PartyCode,
+  label: `${row.Party} - ${row.PartyCode}`
+}));
     return NextResponse.json(partyOptions);
   } catch (err: any) {
     console.error('[OUTSTANDING_PARTY_ERROR]', err);

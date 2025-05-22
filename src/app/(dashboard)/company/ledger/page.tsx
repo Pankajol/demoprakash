@@ -125,7 +125,7 @@ const ReportForm = () => {
       });
       // compute running balance
       let cumDr = 0,
-        cumCr = 0;
+      cumCr = 0;
       const proc = res.data.map((row) => {
         cumDr += row.DrAmt;
         cumCr += row.CrAmt;

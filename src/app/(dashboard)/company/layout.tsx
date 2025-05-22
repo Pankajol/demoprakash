@@ -356,7 +356,7 @@ const CompanyDashboardLayout: React.FC<CompanyDashboardLayoutProps> = ({ childre
       <header className="sticky top-0 w-full bg-white shadow z-10 p-4 flex items-center justify-between">
         {/* Dynamic company name */}
         <h1 className="text-xl font-bold">
-          {companyName} - Company
+          {companyName} 
         </h1>
         <nav className="flex gap-4">
           <Link href="/company" className="px-3 py-2 hover:bg-gray-100 rounded">
@@ -368,7 +368,7 @@ const CompanyDashboardLayout: React.FC<CompanyDashboardLayoutProps> = ({ childre
           >
             Register User
           </Link>
-          <WhoAmI />
+          {/* <WhoAmI /> */}
           <button
             onClick={handleLogout}
             className="px-3 py-2 hover:bg-gray-100 rounded"
@@ -394,12 +394,12 @@ const CompanyDashboardLayout: React.FC<CompanyDashboardLayoutProps> = ({ childre
             >
               User Transaction Summary
             </Link>
-            <Link
+            {/* <Link
               href="/company/reports"
               className="hover:bg-blue-800 rounded p-2"
             >
               Reports
-            </Link>
+            </Link> */}
             <Link
               href="/company/month-trasactions"
               className="hover:bg-blue-800 rounded p-2"
@@ -420,14 +420,14 @@ const CompanyDashboardLayout: React.FC<CompanyDashboardLayoutProps> = ({ childre
             </Link>
 
 
-            {!dbConnected && (
+            {/* {!dbConnected && (
               <button
                 onClick={() => setShowForm(f => !f)}
                 className="bg-green-600 hover:bg-green-700 text-white p-2 rounded"
               >
                 {showForm ? 'Cancel Connect' : 'Connect Local DB'}
               </button>
-            )}
+            )} */}
 
             {/* Inline form */}
             {showForm && !dbConnected && (
