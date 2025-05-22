@@ -21,7 +21,7 @@ interface RecordItem {
 }
 
 const columns: Array<keyof RecordItem> = [
-  'VNo', 'MyType', 'YearId', 'PartyCode', 'type', 'VAmt', 'AdjAmt', 'Amt', 'UsrDate', 'IMonth'
+  'UsrDate','VNo','PartyCode','type','VAmt', 'AdjAmt', 'Amt', 'MyType', 'YearId',     'IMonth'
 ];
 
 export default function DetailsPage() {
@@ -140,17 +140,21 @@ export default function DetailsPage() {
             <tbody>
               {filtered.map((r, i) => (
                 <tr key={i} className={i % 2 ? 'bg-gray-50' : ''}>
-                  <td className="px-3 py-2">{r.VNo}</td>
-                  <td className="px-3 py-2">{r.MyType}</td>
-                  <td className="px-3 py-2">{r.YearId}</td>
-                  <td className="px-3 py-2">{r.PartyCode}</td>
-                  <td className="px-3 py-2">{r.type}</td>
-                  <td className="px-3 py-2 text-right">{r.VAmt}</td>
-                  <td className="px-3 py-2 text-right">{r.AdjAmt}</td>
-                  <td className="px-3 py-2 text-right">{r.VAmt - r.AdjAmt}</td>
-                  <td className="px-3 py-2">
+                     <td className="px-3 py-2">
                     {new Date(r.UsrDate).toLocaleDateString('en-GB')}
                   </td>
+                  <td className="px-3 py-2">{r.VNo}</td>
+                   <td className="px-3 py-2">{r.PartyCode}</td>
+                   <td className="px-3 py-2">{r.type}</td>
+                    <td className="px-3 py-2 text-right">{r.VAmt}</td>
+                  <td className="px-3 py-2 text-right">{r.AdjAmt}</td>
+                  <td className="px-3 py-2 text-right">{r.VAmt - r.AdjAmt}</td>
+                  <td className="px-3 py-2">{r.MyType}</td>
+                  <td className="px-3 py-2">{r.YearId}</td>
+                 
+                 
+                 
+               
                   <td className="px-3 py-2 text-center">{r.IMonth}</td>
                 </tr>
               ))}
