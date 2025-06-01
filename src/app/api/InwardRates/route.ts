@@ -1,0 +1,153 @@
+'use server';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
+import sql from 'mssql'; 
+import webpPool from '@/lib/db';
+
+export async function GET(req: NextRequest) {
+  const JWT_SECRET = process.env.JWT_SECRET!;
+  const token = req.cookies.get('token')?.value;
+
+  if (!token) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  }
+
+  let payload: any;
+  try {
+    ({ payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(JWT_SECRET)
+    ));
+  } catch (err) {
+    return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+  }
+
+  const url = new URL(req.url);
+  const itemName = url.searchParams.get('ItemName');
+  const supplierName = url.searchParams.get('SupplierName');
+  const limitParam = url.searchParams.get('limit');
+  const limit = limitParam ? parseInt(limitParam) : 5;
+
+  try {
+    const pool = await webpPool;
+    const request = pool.request().input('companyCode',  payload.companyCode);
+
+    if (supplierName) {
+      request.input('SupplierName', sql.NVarChar, supplierName);
+    }
+
+    if (itemName) {
+      request.input('ItemName', sql.NVarChar, itemName);
+    }
+
+    if (limit > 0) {
+      request.input('limit', sql.Int, limit);
+    }
+
+    let sqlText = `
+      SELECT ${limit > 0 ? 'TOP (@limit)' : ''} *
+      FROM dbo.tbl_inwardRates
+      WHERE companyCode = @companyCode
+    `;
+
+    if (supplierName) {
+      sqlText += ` AND SupplierName = @SupplierName`;
+    }
+
+    if (itemName) {
+      sqlText += ` AND ItemName LIKE '%' + @ItemName + '%'`;
+    }
+
+    sqlText += ` ORDER BY MyId DESC`;
+
+    const result = await request.query(sqlText);
+    const data = result.recordset.reverse(); // Optional: oldest first
+
+    return NextResponse.json(data);
+  } catch (err: any) {
+    console.error('[INWARD_RATES_ERROR]', err);
+    return NextResponse.json(
+      { error: 'Failed to fetch inward rates', details: err.message },
+      { status: 500 }
+    );
+  }
+}
+
+
+
+// 'use server';
+
+// import { NextRequest, NextResponse } from 'next/server';
+// import { jwtVerify } from 'jose';
+// import sql from 'mssql'; 
+// import webpPool from '@/lib/db';
+
+// export async function GET(req: NextRequest) {
+//   const JWT_SECRET = process.env.JWT_SECRET!;
+//   const token = req.cookies.get('token')?.value;
+//   if (!token) {
+//     return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+//   }
+
+//   let payload: any;
+//   try {
+//     ({ payload } = await jwtVerify(
+//       token,
+//       new TextEncoder().encode(JWT_SECRET)
+//     ));
+//   } catch (err) {
+//     return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+//   }
+
+//   const url = new URL(req.url);
+//   const itemName = url.searchParams.get('ItemName');
+//   const supplierId = url.searchParams.get('LedId_Supplier');
+//   const limitParam = url.searchParams.get('limit');
+//   const limit = limitParam ? parseInt(limitParam) : 5; // default 5 records if no limit
+
+//   try {
+//     const pool = await webpPool;
+//     const request = pool.request()
+//       .input('companyCode', payload.companyCode);
+
+//     let sqlText = `
+//       SELECT *
+//       FROM dbo.tbl_inwardRates
+//       WHERE companyCode = @companyCode
+//     `;
+
+//     if (supplierId) {
+//       sqlText += ` AND LedId_Supplier = @LedId_Supplier`;
+//       request.input('LedId_Supplier', sql.Int, parseInt(supplierId));
+//     }
+
+//     if (itemName) {
+//       sqlText += ` AND ItemName LIKE '%' + @ItemName + '%'`;
+//       request.input('ItemName', sql.NVarChar, itemName);
+//     }
+
+//     sqlText += `
+//       ORDER BY MyId DESC
+//     `;
+
+//     // If limit is specified, fetch top N rows using OFFSET-FETCH
+//     if (limit && limit > 0) {
+//       sqlText += ` OFFSET 0 ROWS FETCH NEXT @limit ROWS ONLY`;
+//       request.input('limit', sql.Int, limit);
+//     }
+
+//     const result = await request.query(sqlText);
+
+//     // Reverse to ascending order so oldest appear first in UI
+//     const data = result.recordset.reverse();
+
+//     return NextResponse.json(data);
+//   } catch (err: any) {
+//     console.error('[INWARD_RATES_ERROR]', err);
+//     return NextResponse.json(
+//       { error: 'Failed to fetch inward rates', details: err.message },
+//       { status: 500 }
+//     );
+//   }
+// }

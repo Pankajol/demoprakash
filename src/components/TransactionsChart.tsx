@@ -18,7 +18,6 @@ import {
   ChartEvent,
   ActiveElement
 } from 'chart.js';
-import DownloadPdfButton from './DownloadPdfButton';
 
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, Title, Tooltip, Legend);
 
@@ -26,7 +25,6 @@ type TransactionSummary = {
   MyType: string;
   Nos: number;
   Net: number;
-  
 };
 
 const TransactionsChart: React.FC = () => {
@@ -43,7 +41,6 @@ const TransactionsChart: React.FC = () => {
       try {
         const response = await fetch('/api/yearIds');
         const data = await response.json();
-        console.log("YearId API response:", data);
         const yearsList = data.map((item: { YearId: number }) => item.YearId);
         setYears(yearsList);
         if (yearsList.length > 0) setSelectedYear(yearsList[0]);
@@ -58,28 +55,19 @@ const TransactionsChart: React.FC = () => {
     const fetchDateRange = async () => {
       if (!selectedYear) return;
       setLoading(true);
-      console.log('Fetching date range for year:', selectedYear);
       try {
         const response = await fetch(`/api/get-date-range?yearId=${selectedYear}`);
         const data = await response.json();
-        console.log('API Response:', data);
-
         if (data.StartDate && data.EndDate) {
-          console.log('Start Date:', data.StartDate);
-          console.log('End Date:', data.EndDate);
           setFromDate(new Date(data.StartDate));
           setToDate(new Date(data.EndDate));
-        } else {
-          console.log('Start or End date not found in response');
         }
       } catch (error) {
         console.error('Error fetching date range:', error);
       } finally {
         setLoading(false);
-        console.log('Loading state set to false');
       }
     };
-
     fetchDateRange();
   }, [selectedYear]);
 
@@ -89,16 +77,14 @@ const TransactionsChart: React.FC = () => {
     try {
       const fromDateStr = fromDate.toISOString().split('T')[0];
       const toDateStr = toDate.toISOString().split('T')[0];
-      // const response = await fetch(`/api/transactions?fromDate=${fromDateStr}&toDate=${toDateStr}`);
-      // change every fetch to include credentials
-const response = await fetch(
-  `/api/transactions?fromDate=${fromDateStr}&toDate=${toDateStr}`,
-  {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' }
-  }
-);
+      const response = await fetch(
+        `/api/transactions?fromDate=${fromDateStr}&toDate=${toDateStr}`,
+        {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
       const data = await response.json();
       setTransactions(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -142,6 +128,7 @@ const response = await fetch(
 
   const chartOptions: ChartOptions<'bar'> = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { position: 'top' },
       title: { display: true, text: 'Transactions by MyType' },
@@ -155,68 +142,62 @@ const response = await fetch(
         },
       },
     },
-    onClick: (
-      event: ChartEvent,
-      elements: ActiveElement[],
-    ) => {
+    onClick: (event: ChartEvent, elements: ActiveElement[]) => {
       if (elements.length > 0) {
         const chartIndex = elements[0].index;
         const clickedType = chartData.labels?.[chartIndex];
         if (clickedType) {
-          router.push(`company/transactions/${encodeURIComponent(clickedType)}?fromDate=${fromDate?.toISOString().split('T')[0]}&toDate=${toDate?.toISOString().split('T')[0]}`);
+          router.push(
+            `company/transactions/${encodeURIComponent(clickedType)}?fromDate=${fromDate?.toISOString().split('T')[0]}&toDate=${toDate?.toISOString().split('T')[0]}`
+          );
         }
       }
     },
     scales: {
-      x: {
-        title: { display: true, text: 'Transaction Type' },
-      },
-      y: {
-        beginAtZero: true,
-        title: { display: true, text: 'Value / Count' },
-      },
+      x: { title: { display: true, text: 'Transaction Type' } },
+      y: { beginAtZero: true, title: { display: true, text: 'Value / Count' } },
     },
   };
 
   return (
-    <div>
-      {/* <h2 className="mb-4 font-semibold text-xl">D</h2> */}
-      <h2 className="mb-4 font-semibold text-xl">Transactions Chart</h2>
-      {/* <DownloadPdfButton /> */}
-      <div className="flex flex-wrap gap-4 mb-4">
+    <div className="w-full p-4">
+      <h2 className="mb-4 font-semibold text-xl text-center">Transactions Chart</h2>
+
+      <div className="flex flex-col sm:flex-row gap-4 mb-4 items-start sm:items-center">
         <div>
-          <label>Select Year:&nbsp;</label>
+          <label className="font-medium">Select Year:&nbsp;</label>
           <select
             value={selectedYear ?? ''}
             onChange={(e) => {
               const value = parseInt(e.target.value);
               if (!isNaN(value)) setSelectedYear(value);
             }}
+            className="border rounded px-2 py-1"
           >
             <option value="" disabled>Select a year</option>
             {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
+              <option key={year} value={year}>{year}</option>
             ))}
           </select>
         </div>
 
         <div>
-          <label>From Date:&nbsp;</label>
+          <label className="font-medium">From:&nbsp;</label>
           <DatePicker
             selected={fromDate}
             onChange={(date: Date | null) => date && setFromDate(date)}
             dateFormat="dd-MM-yyyy"
+            className="border rounded px-2 py-1"
           />
         </div>
 
         <div>
-          <label>To Date:&nbsp;</label>
+          <label className="font-medium">To:&nbsp;</label>
           <DatePicker
             selected={toDate}
             onChange={(date: Date | null) => date && setToDate(date)}
             dateFormat="dd-MM-yyyy"
+            className="border rounded px-2 py-1"
           />
         </div>
       </div>
@@ -224,13 +205,18 @@ const response = await fetch(
       {loading ? (
         <div>Loading chart data...</div>
       ) : (
-        <Bar data={chartData} options={chartOptions} />
+        <div className="w-full overflow-x-auto bg-white rounded shadow">
+          <div className="min-w-[350px] sm:min-w-full h-[350px]">
+            <Bar data={chartData} options={chartOptions} />
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 export default TransactionsChart;
+
 
 
 
