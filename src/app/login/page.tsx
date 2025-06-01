@@ -59,86 +59,189 @@ const LoginPage: React.FC = () => {
   
 
   return (
+    // <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    //   <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    //     <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+
+    //     <div className="flex justify-center gap-4 mb-6">
+    //       <button
+    //         type="button"
+    //         onClick={() => setLoginType('company')}
+    //         className={`px-4 py-2 rounded ${loginType === 'company' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+    //         disabled={loading}
+    //       >
+    //         Company
+    //       </button>
+    //       <button
+    //         type="button"
+    //         onClick={() => setLoginType('user')}
+    //         className={`px-4 py-2 rounded ${loginType === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+    //         disabled={loading}
+    //       >
+    //         User
+    //       </button>
+    //     </div>
+
+    //     <form onSubmit={handleSubmit} className="space-y-4">
+    //       {loginType === 'company' ? (
+    //         <div>
+    //           <label htmlFor="email" className="block text-sm font-medium">Email</label>
+    //           <input
+    //             id="email"
+    //             type="email"
+    //             value={email}
+    //             onChange={(e) => setEmail(e.target.value)}
+    //             placeholder="Enter your email"
+    //             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+    //             disabled={loading}
+    //           />
+    //         </div>
+    //       ) : (
+    //         <div>
+    //           <label htmlFor="username" className="block text-sm font-medium">Username</label>
+    //           <input
+    //             id="username"
+    //             type="text"
+    //             value={username}
+    //             onChange={(e) => setUsername(e.target.value)}
+    //             placeholder="Enter your username"
+    //             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+    //             disabled={loading}
+    //           />
+    //         </div>
+    //       )}
+    //       <div>
+    //         <label htmlFor="password" className="block text-sm font-medium">Password</label>
+    //         <input
+    //           id="password"
+    //           type="password"
+    //           value={password}
+    //           onChange={(e) => setPassword(e.target.value)}
+    //           placeholder="Enter your password"
+    //           className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+    //           disabled={loading}
+    //         />
+    //       </div>
+    //       <button
+    //         type="submit"
+    //         className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+    //         disabled={loading}
+    //       >
+    //         {loading ? 'Logging in...' : `Login as ${loginType === 'company' ? 'Company' : 'User'}`}
+    //       </button>
+    //     </form>
+
+    //     <p className="mt-4 text-center">
+    //       Don't have an account?{' '}
+    //       <Link href="/register" className="text-blue-600 hover:underline">
+    //         Create an account
+    //       </Link>
+    //     </p>
+    //   </div>
+    // </div>
+
+
+
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+  <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
 
-        <div className="flex justify-center gap-4 mb-6">
-          <button
-            type="button"
-            onClick={() => setLoginType('company')}
-            className={`px-4 py-2 rounded ${loginType === 'company' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-            disabled={loading}
-          >
-            Company
-          </button>
-          <button
-            type="button"
-            onClick={() => setLoginType('user')}
-            className={`px-4 py-2 rounded ${loginType === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
-            disabled={loading}
-          >
-            User
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {loginType === 'company' ? (
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium">Email</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                disabled={loading}
-              />
-            </div>
-          ) : (
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium">Username</label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your username"
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                disabled={loading}
-              />
-            </div>
-          )}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              disabled={loading}
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : `Login as ${loginType === 'company' ? 'Company' : 'User'}`}
-          </button>
-        </form>
-
-        <p className="mt-4 text-center">
-          Don't have an account?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
-            Create an account
-          </Link>
-        </p>
-      </div>
+    {/* Toggle Buttons */}
+    <div className="flex justify-center gap-4 mb-6">
+      <button
+        type="button"
+        onClick={() => setLoginType('company')}
+        className={`px-4 py-2 rounded ${
+          loginType === 'company'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-800'
+        }`}
+        disabled={loading}
+      >
+        Company
+      </button>
+      <button
+        type="button"
+        onClick={() => setLoginType('user')}
+        className={`px-4 py-2 rounded ${
+          loginType === 'user'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-800'
+        }`}
+        disabled={loading}
+      >
+        User
+      </button>
     </div>
+
+    {/* Login Form */}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {loginType === 'company' ? (
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            disabled={loading}
+          />
+        </div>
+      ) : (
+        <div>
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your username"
+            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            disabled={loading}
+          />
+        </div>
+      )}
+
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter your password"
+          className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+          disabled={loading}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        disabled={loading}
+      >
+        {loading ? 'Logging in...' : `Login as ${loginType === 'company' ? 'Company' : 'User'}`}
+      </button>
+    </form>
+
+    {/* Redirect to register */}
+    <p className="mt-4 text-center text-sm text-gray-600">
+      Don't have an account?{' '}
+      <Link href="/register" className="text-blue-600 hover:underline font-medium">
+        Create an account
+      </Link>
+    </p>
+  </div>
+</div>
+
   );
 };
 
