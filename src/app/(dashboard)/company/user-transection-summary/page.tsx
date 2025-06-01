@@ -160,11 +160,125 @@ const DetailedTransactionsTable: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex flex-wrap items-center justify-end gap-4 mb-4">
-        {/* Year, From, To controls */}
+    // <div className="p-4">
+    //   <div className="flex flex-wrap items-center justify-end gap-4 mb-4">
+    //     {/* Year, From, To controls */}
+    //     <div>
+    //       <label className="mr-2">Year:</label>
+    //       <select
+    //         value={yearId}
+    //         onChange={e => setYearId(+e.target.value)}
+    //         className="border rounded px-2 py-1"
+    //       >
+    //         {years.map(y => (
+    //           <option key={y} value={y}>{y}</option>
+    //         ))}
+    //       </select>
+    //     </div>
+    //     <div>
+    //       <label className="mr-2">From:</label>
+    //       <DatePicker
+    //         selected={fromDate}
+    //         onChange={(date:Date | null) => setFromDate(date)}
+    //         dateFormat="dd-MM-yyyy"
+    //         className="border rounded px-2 py-1"
+    //       />
+    //     </div>
+    //     <div>
+    //       <label className="mr-2">To:</label>
+    //       <DatePicker
+    //         selected={toDate}
+    //         onChange={(date:Date | null) => setToDate(date)}
+    //         dateFormat="dd-MM-yyyy"
+    //         className="border rounded px-2 py-1"
+    //       />
+    //     </div>
+    //   </div>
+
+    //   {loading ? (
+    //     <div className="text-center py-10">Loading...</div>
+    //   ) : (
+    //     <div className="overflow-x-auto">
+    //       <table className="min-w-full table-auto border-collapse">
+    //         <thead>
+    //           <tr className="bg-gray-100">
+    //             <th className="px-4 py-2 border">UsrName</th>
+    //             <th className="px-4 py-2 border">UsrDate</th>
+    //             <th className="px-4 py-2 border">MyType</th>
+    //             <th className="px-4 py-2 border">Nos</th>
+    //             <th className="px-4 py-2 border">Amt</th>
+    //           </tr>
+    //         </thead>
+    //         <tbody>
+    //           {data.map((row, idx) => (
+    //             <React.Fragment key={idx}>
+    //               <tr
+    //                 className="hover:bg-gray-50 cursor-pointer"
+    //                 onClick={() => handleRowClick(row, idx)}
+    //               >
+    //                 <td className="px-4 py-2 border">{row.UsrName}</td>
+    //                 <td className="px-4 py-2 border">{new Date(row.UsrDate).toLocaleDateString()}</td>
+    //                 <td className="px-4 py-2 border">{row.MyType}</td>
+    //                 <td className="px-4 py-2 border text-right">{row.Nos}</td>
+    //                 <td className="px-4 py-2 border text-right">₹{row.Amt.toFixed(2)}</td>
+    //               </tr>
+    //               {expandedIndex === idx && (
+    //                 <tr>
+    //                   <td colSpan={5} className="bg-gray-50 p-4">
+    //                     {detailLoading ? (
+    //                       <div>Loading import details...</div>
+    //                     ) : detailError ? (
+    //                       <div className="text-red-500">{detailError}</div>
+    //                     ) : selectedDetails.length > 0 ? (
+    //                       <table className="min-w-full table-auto border-collapse">
+    //                         <thead>
+    //                           <tr className="bg-gray-200">
+    //                             <th className="px-2 py-1 border">VNo</th>
+    //                             <th className="px-2 py-1 border">Party</th>
+    //                             <th className="px-2 py-1 border">CityArea</th>
+    //                             <th className="px-2 py-1 border text-right">VAmt</th>
+    //                             <th className="px-2 py-1 border text-right">AdjAmt</th>
+    //                             <th className="px-2 py-1 border">EditMode</th>
+    //                             <th className="px-2 py-1 border">EditUpdate</th>
+    //                           </tr>
+    //                         </thead>
+    //                         <tbody>
+    //                           {selectedDetails.map((d, i) => (
+    //                             <tr key={i} className="hover:bg-gray-100">
+    //                               <td className="px-2 py-1 border">{d.VNo}</td>
+    //                               <td className="px-2 py-1 border">{d.Party}</td>
+    //                               <td className="px-2 py-1 border">{d.CityArea.trim()}</td>
+    //                               <td className="px-2 py-1 border text-right">₹{d.VAmt.toFixed(2)}</td>
+    //                               <td className="px-2 py-1 border text-right">₹{d.AdjAmt.toFixed(2)}</td>
+    //                               <td className="px-2 py-1 border">{d.EditMode}</td>
+    //                               <td className="px-2 py-1 border">{new Date(d.EditUpdate).toLocaleString()}</td>
+    //                             </tr>
+    //                           ))}
+    //                         </tbody>
+    //                       </table>
+    //                     ) : null}
+    //                   </td>
+    //                 </tr>
+    //               )}
+    //             </React.Fragment>
+    //           ))}
+    //         </tbody>
+    //       </table>
+    //     </div>
+    //   )}
+    // </div>
+
+
+
+
+
+    <div className="min-h-screen bg-gray-100 p-6">
+  <div className="bg-white p-4 rounded-lg shadow">
+    <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+      <h1 className="text-xl font-bold">User Report</h1>
+      <div className="flex flex-wrap items-center gap-4">
         <div>
-          <label className="mr-2">Year:</label>
+          <label className="mr-2 font-medium">Year:</label>
           <select
             value={yearId}
             onChange={e => setYearId(+e.target.value)}
@@ -176,61 +290,65 @@ const DetailedTransactionsTable: React.FC = () => {
           </select>
         </div>
         <div>
-          <label className="mr-2">From:</label>
+          <label className="mr-2 font-medium">From:</label>
           <DatePicker
             selected={fromDate}
-            onChange={(date:Date | null) => setFromDate(date)}
+            onChange={(date: Date | null) => setFromDate(date)}
             dateFormat="dd-MM-yyyy"
             className="border rounded px-2 py-1"
           />
         </div>
         <div>
-          <label className="mr-2">To:</label>
+          <label className="mr-2 font-medium">To:</label>
           <DatePicker
             selected={toDate}
-            onChange={(date:Date | null) => setToDate(date)}
+            onChange={(date: Date | null) => setToDate(date)}
             dateFormat="dd-MM-yyyy"
             className="border rounded px-2 py-1"
           />
         </div>
       </div>
+    </div>
 
-      {loading ? (
-        <div className="text-center py-10">Loading...</div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border-collapse">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-2 border">UsrName</th>
-                <th className="px-4 py-2 border">UsrDate</th>
-                <th className="px-4 py-2 border">MyType</th>
-                <th className="px-4 py-2 border">Nos</th>
-                <th className="px-4 py-2 border">Amt</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, idx) => (
-                <React.Fragment key={idx}>
-                  <tr
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handleRowClick(row, idx)}
-                  >
-                    <td className="px-4 py-2 border">{row.UsrName}</td>
-                    <td className="px-4 py-2 border">{new Date(row.UsrDate).toLocaleDateString()}</td>
-                    <td className="px-4 py-2 border">{row.MyType}</td>
-                    <td className="px-4 py-2 border text-right">{row.Nos}</td>
-                    <td className="px-4 py-2 border text-right">₹{row.Amt.toFixed(2)}</td>
-                  </tr>
-                  {expandedIndex === idx && (
-                    <tr>
-                      <td colSpan={5} className="bg-gray-50 p-4">
-                        {detailLoading ? (
-                          <div>Loading import details...</div>
-                        ) : detailError ? (
-                          <div className="text-red-500">{detailError}</div>
-                        ) : selectedDetails.length > 0 ? (
-                          <table className="min-w-full table-auto border-collapse">
+    {loading ? (
+      <div className="text-center py-10">Loading...</div>
+    ) : (
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse text-sm">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 border text-left">UsrName</th>
+              <th className="px-4 py-2 border text-left">UsrDate</th>
+              <th className="px-4 py-2 border text-left">MyType</th>
+              <th className="px-4 py-2 border text-right">Nos</th>
+              <th className="px-4 py-2 border text-right">Amt</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, idx) => (
+              <React.Fragment key={idx}>
+                <tr
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handleRowClick(row, idx)}
+                >
+                  <td className="px-4 py-2 border">{row.UsrName}</td>
+                  <td className="px-4 py-2 border">
+                    {new Date(row.UsrDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-2 border">{row.MyType}</td>
+                  <td className="px-4 py-2 border text-right">{row.Nos}</td>
+                  <td className="px-4 py-2 border text-right">₹{row.Amt.toFixed(2)}</td>
+                </tr>
+                {expandedIndex === idx && (
+                  <tr>
+                    <td colSpan={5} className="bg-gray-50 p-4">
+                      {detailLoading ? (
+                        <div>Loading import details...</div>
+                      ) : detailError ? (
+                        <div className="text-red-500">{detailError}</div>
+                      ) : selectedDetails.length > 0 ? (
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full table-auto border-collapse text-sm">
                             <thead>
                               <tr className="bg-gray-200">
                                 <th className="px-2 py-1 border">VNo</th>
@@ -256,17 +374,22 @@ const DetailedTransactionsTable: React.FC = () => {
                               ))}
                             </tbody>
                           </table>
-                        ) : null}
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+                        </div>
+                      ) : (
+                        <div>No details found.</div>
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+</div>
+
   );
 };
 

@@ -74,15 +74,15 @@ export async function GET(req: NextRequest) {
   // 4. Execute query
   try {
     const result = await request.query(sqlQuery);
-    // const partyOptions = result.recordset.map((row: { PartyCode: string; Party: string }) => ({
-    //   value: row.PartyCode,
-    //   label: `${row.PartyCode} - ${row.Party}`
-    // }));
-
     const partyOptions = result.recordset.map((row: { PartyCode: string; Party: string }) => ({
-  value: row.PartyCode,
-  label: `${row.Party} - ${row.PartyCode}`
-}));
+      value: row.PartyCode,
+      label: `${row.PartyCode} - ${row.Party}`
+    }));
+
+//     const partyOptions = result.recordset.map((row: { PartyCode: string; Party: string }) => ({
+//   value: row.PartyCode,
+//   label: `${row.Party} - ${row.PartyCode}`
+// }));
     return NextResponse.json(partyOptions);
   } catch (err: any) {
     console.error('[OUTSTANDING_PARTY_ERROR]', err);

@@ -160,58 +160,79 @@ const TransactionsChart: React.FC = () => {
   };
 
   return (
-    <div className="w-full p-4">
-      <h2 className="mb-4 font-semibold text-xl text-center">Transactions Chart</h2>
+<div className="w-full px-4 py-6 sm:px-6 lg:px-8">
+  <div className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
+    <h2 className="text-center text-2xl font-bold text-gray-900 dark:text-white">
+      📊 Transactions Overview
+    </h2>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-4 items-start sm:items-center">
-        <div>
-          <label className="font-medium">Select Year:&nbsp;</label>
-          <select
-            value={selectedYear ?? ''}
-            onChange={(e) => {
-              const value = parseInt(e.target.value);
-              if (!isNaN(value)) setSelectedYear(value);
-            }}
-            className="border rounded px-2 py-1"
-          >
-            <option value="" disabled>Select a year</option>
-            {years.map((year) => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="font-medium">From:&nbsp;</label>
-          <DatePicker
-            selected={fromDate}
-            onChange={(date: Date | null) => date && setFromDate(date)}
-            dateFormat="dd-MM-yyyy"
-            className="border rounded px-2 py-1"
-          />
-        </div>
-
-        <div>
-          <label className="font-medium">To:&nbsp;</label>
-          <DatePicker
-            selected={toDate}
-            onChange={(date: Date | null) => date && setToDate(date)}
-            dateFormat="dd-MM-yyyy"
-            className="border rounded px-2 py-1"
-          />
-        </div>
+    {/* Filters */}
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Year */}
+      <div>
+        <label htmlFor="yearSelect" className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+          Select Year
+        </label>
+        <select
+          id="yearSelect"
+          value={selectedYear ?? ''}
+          onChange={(e) => {
+            const value = parseInt(e.target.value);
+            if (!isNaN(value)) setSelectedYear(value);
+          }}
+          className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="" disabled>Select a year</option>
+          {years.map((year) => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
       </div>
 
+      {/* From Date */}
+      <div>
+        <label htmlFor="fromDate" className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+          From
+        </label>
+        <DatePicker
+          selected={fromDate}
+          onChange={(date: Date | null) => date && setFromDate(date)}
+          dateFormat="dd-MM-yyyy"
+          className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500"
+          id="fromDate"
+        />
+      </div>
+
+      {/* To Date */}
+      <div>
+        <label htmlFor="toDate" className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+          To
+        </label>
+        <DatePicker
+          selected={toDate}
+          onChange={(date: Date | null) => date && setToDate(date)}
+          dateFormat="dd-MM-yyyy"
+          className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500"
+          id="toDate"
+        />
+      </div>
+    </div>
+
+    {/* Chart */}
+    <div className="w-full overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
       {loading ? (
-        <div>Loading chart data...</div>
+        <div className="text-center p-6 text-gray-600 dark:text-gray-300 font-medium">Loading chart data...</div>
       ) : (
-        <div className="w-full overflow-x-auto bg-white rounded shadow">
-          <div className="min-w-[350px] sm:min-w-full h-[350px]">
-            <Bar data={chartData} options={chartOptions} />
-          </div>
+        <div className="min-w-[360px] w-full h-[350px] p-4">
+          <Bar data={chartData} options={chartOptions} />
         </div>
       )}
     </div>
+  </div>
+</div>
+
+
+
   );
 };
 

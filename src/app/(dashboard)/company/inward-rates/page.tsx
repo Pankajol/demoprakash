@@ -108,7 +108,7 @@ export default function InwardRatesPage() {
           )}
         </div>
 
-        {/* <div className="w-full sm:w-1/2 relative">
+        <div className="w-full sm:w-1/2 relative">
           <input
             type="text"
             placeholder="Search Supplier..."
@@ -139,7 +139,7 @@ export default function InwardRatesPage() {
               ))}
             </ul>
           )}
-        </div> */}
+        </div>
       </div>
 
       {loading ? (
