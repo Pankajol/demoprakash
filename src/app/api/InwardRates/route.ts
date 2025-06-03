@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
     sqlText += ` ORDER BY MyId DESC`;
 
     const result = await request.query(sqlText);
-    const data = result.recordset.reverse(); // Optional: oldest first
+    const data = result.recordset; // Optional: oldest first
 
     return NextResponse.json(data);
   } catch (err: any) {
