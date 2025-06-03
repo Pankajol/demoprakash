@@ -42,10 +42,10 @@ export async function GET(req: NextRequest) {
     conditions.push('PartyCode = @partyCode');
     request.input('partyCode', partyCode);
   }
-  if (party) {
-    conditions.push('Party LIKE @partyName');
-    request.input('partyName', `%${party}%`);
-  }
+ if (party && party !== partyCode) {
+  conditions.push('Party LIKE @partyName');
+  request.input('partyName', `%${party}%`);
+}
   if (myTypes.length) {
     const clauses = myTypes.map((_, i) => `MyType = @type${i}`);
     conditions.push(`(${clauses.join(' OR ')})`);

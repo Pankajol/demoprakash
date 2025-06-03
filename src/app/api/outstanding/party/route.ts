@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
   }
 
   // 3. Build WHERE clauses
-  const conditions: string[] = ['(VAmt - AdjAmt) >= 0', 'UsrDate >= @fromDate', 'UsrDate <= @toDate', 'companyCode = @companyCode'];
+  const conditions: string[] = ['(VAmt - AdjAmt) > 0', 'UsrDate >= @fromDate', 'UsrDate <= @toDate', 'companyCode = @companyCode'];
   const pool = await webpPool;
   const request = pool.request()
     .input('fromDate', new Date(fromDate))

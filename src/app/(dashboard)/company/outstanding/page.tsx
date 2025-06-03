@@ -74,32 +74,64 @@ export default function PartyOutstandingPage() {
   }, [selectedParty]);
 
   // Handle generation
+  // const handleGenerate = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setHasFetched(true);
+  //   if (!selectedParty || !selectedType || !fromDate || !toDate) {
+  //     alert('Please select Party, Type, From Date and To Date.');
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     const { data } = await axios.get<Transaction[]>('/api/outstanding/transactions', {
+  //       params: {
+  //         partyCode,
+  //         party: partyLabel,
+  //         myTypes: selectedType,
+  //         fromDate: fromDate.toISOString().slice(0,10),
+  //         toDate:   toDate.toISOString().slice(0,10),
+  //       }
+  //     });
+  //     setTransactions(data);
+  //   } catch (err) {
+  //     console.error('Error fetching transactions:', err);
+  //     alert('Error loading data');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setHasFetched(true);
-    if (!selectedParty || !selectedType || !fromDate || !toDate) {
-      alert('Please select Party, Type, From Date and To Date.');
-      return;
-    }
-    setLoading(true);
-    try {
-      const { data } = await axios.get<Transaction[]>('/api/outstanding/transactions', {
-        params: {
-          partyCode,
-          party: partyLabel,
-          myTypes: selectedType,
-          fromDate: fromDate.toISOString().slice(0,10),
-          toDate:   toDate.toISOString().slice(0,10),
-        }
-      });
-      setTransactions(data);
-    } catch (err) {
-      console.error('Error fetching transactions:', err);
-      alert('Error loading data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  setHasFetched(true);
+
+  if (!fromDate || !toDate) {
+    alert('Please select From Date and To Date.');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const params: any = {
+      fromDate: fromDate.toISOString().slice(0, 10),
+      toDate: toDate.toISOString().slice(0, 10),
+    };
+
+    if (partyCode) params.partyCode = partyCode;
+    if (partyLabel) params.party = partyLabel;
+    if (selectedType) params.myTypes = selectedType;
+
+    const { data } = await axios.get<Transaction[]>('/api/outstanding/transactions', { params });
+    setTransactions(data);
+  } catch (err) {
+    console.error('Error fetching transactions:', err);
+    alert('Error loading data');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // Compute totals
   const totalVAmt   = transactions.reduce((sum, t) => sum + t.VAmt, 0);
