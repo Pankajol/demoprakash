@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
         new TextEncoder().encode(JWT_SECRET)
       );
       payload = userPayload;
-      console.log("Decoded JWT Payload:", payload);
+      // console.log("Decoded JWT Payload:", payload);
     } catch (_e) {
       return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
     }

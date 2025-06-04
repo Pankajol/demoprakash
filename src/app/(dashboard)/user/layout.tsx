@@ -217,19 +217,19 @@ const UserDashboardLayout: React.FC<UserDashboardLayoutProps> = ({ children }) =
             <Link href="/user" className="hover:underline">
               Home
             </Link>
-            <Link href="/user/user-transection-summary" className="hover:bg-blue-800 rounded p-2">
+            <Link href="/user/user-transection-summary" className="hover:bg-green-700 rounded p-2">
               User Transaction Summary
             </Link>
-            <Link href="/user/month-trasactions" className="hover:bg-blue-800 rounded p-2">
+            <Link href="/user/month-trasactions" className="hover:bg-green-700 rounded p-2">
               Monthly Transactions
             </Link>
-            <Link href="/user/outstanding" className="hover:bg-blue-800 rounded p-2">
+            <Link href="/user/outstanding" className="hover:bg-green-700 rounded p-2">
               Outstanding Monthly
             </Link>
-            <Link href="/user/ledger" className="hover:bg-blue-800 rounded p-2">
+            <Link href="/user/ledger" className="hover:bg-green-700 rounded p-2">
               Ledger
             </Link>
-                <Link href="/user/stocks" className="hover:bg-blue-800 rounded p-2">
+                <Link href="/user/stocks" className="hover:bg-green-700 rounded p-2">
                   Stock
                 </Link>
           </nav>
@@ -247,33 +247,31 @@ const UserDashboardLayout: React.FC<UserDashboardLayoutProps> = ({ children }) =
               </button>
               <nav className="flex flex-col gap-4">
                 {/* Include mobile equivalents of top nav */}
-                <Link href="/user" className="hover:bg-blue-800 rounded p-2">
+                <Link href="/user" className="hover:bg-green-700 rounded p-2" onClick={() => setSidebarOpen(false)}>
                   Dashboard
                 </Link>
-                <Link href="/profile" className="hover:bg-blue-800 rounded p-2">
-                  Profile
-                </Link>
+
                 <button
                   onClick={handleLogout}
-                  className="text-left hover:bg-blue-800 rounded p-2"
+                  className="text-left hover:bg-green-700 rounded p-2"
                 >
                   Logout
                 </button>
                 <hr className="border-white my-2" />
-                <Link href="/user/user-transection-summary" className="hover:bg-blue-800 rounded p-2">
+                <Link href="/user/user-transection-summary" className="hover:bg-green-700 rounded p-2" onClick={() => setSidebarOpen(false)}>
                   User Transaction Summary
                 </Link>
-                <Link href="/user/month-trasactions" className="hover:bg-blue-800 rounded p-2">
+                <Link href="/user/month-trasactions" className="hover:bg-green-700 rounded p-2" onClick={() => setSidebarOpen(false)}>
                   Monthly Transactions
                 </Link>
-                <Link href="/user/outstanding" className="hover:bg-blue-800 rounded p-2">
+                <Link href="/user/outstanding" className="hover:bg-green-700 rounded p-2" onClick={() => setSidebarOpen(false)}>
                   Outstanding Monthly
                 </Link>
-                <Link href="/user/ledger" className="hover:bg-blue-800 rounded p-2">
+                <Link href="/user/ledger" className="hover:bg-green-700 rounded p-2" onClick={() => setSidebarOpen(false)}>
                   Ledger
                 </Link>
              
-                 <Link href="/user/stocks" className="hover:bg-blue-800 rounded p-2">
+                 <Link href="/user/stocks" className="hover:bg-green-700 rounded p-2" onClick={() => setSidebarOpen(false)}>
                   Stock
                 </Link>
               </nav>
