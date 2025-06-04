@@ -114,8 +114,8 @@ export default function PartyOutstandingPage() {
   setLoading(true);
   try {
     const params: any = {
-      fromDate: fromDate.toISOString().slice(0, 10),
-      toDate: toDate.toISOString().slice(0, 10),
+    fromDate: fromDate.toLocaleDateString('en-CA'), // 'YYYY-MM-DD'
+  toDate: toDate.toLocaleDateString('en-CA'),
     };
 
     if (partyCode) params.partyCode = partyCode;

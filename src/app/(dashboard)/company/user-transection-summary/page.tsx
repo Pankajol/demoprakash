@@ -369,7 +369,15 @@ const DetailedTransactionsTable: React.FC = () => {
                                   <td className="px-2 py-1 border text-right">₹{d.VAmt.toFixed(2)}</td>
                                   <td className="px-2 py-1 border text-right">₹{d.AdjAmt.toFixed(2)}</td>
                                   <td className="px-2 py-1 border">{d.EditMode}</td>
-                                  <td className="px-2 py-1 border">{new Date(d.EditUpdate).toLocaleString('en-IN')}</td>
+                                  <td className="px-2 py-1 border">{new Date(d.EditUpdate).toLocaleString('en-IN',{
+                                     day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+                                  })}</td>
                                 </tr>
                               ))}
                             </tbody>

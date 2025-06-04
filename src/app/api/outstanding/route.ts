@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
     request.input('fromDate', new Date(fromDateParam));
   }
   if (toDateParam) {
-    conditions.push('UsrDate <= @toDate');
+    conditions.push('UsrDate >= @toDate');
     request.input('toDate', new Date(toDateParam));
   }
 
