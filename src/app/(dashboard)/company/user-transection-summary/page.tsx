@@ -107,13 +107,13 @@ const DetailedTransactionsTable: React.FC = () => {
       .finally(() => setLoading(false));
   }, [yearId, fromDate, toDate]);
 
-  const formatDate = (isoStr: string) => {
-    try {
-      return new Date(isoStr).toLocaleDateString();
-    } catch {
-      return isoStr;
-    }
-  };
+  // const formatDate = (isoStr: string) => {
+  //   try {
+  //     return new Date(isoStr).toLocaleDateString();
+  //   } catch {
+  //     return isoStr;
+  //   }
+  // };
 
   const formatForQuery = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -157,7 +157,20 @@ const DetailedTransactionsTable: React.FC = () => {
         setDetailError('Failed to load import details.');
       })
       .finally(() => setDetailLoading(false));
+
+
+    
   };
+
+    function formatISTDateTime(utcStr) {
+  const date = new Date(utcStr);
+  const istDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+
+  const pad = (n) => n.toString().padStart(2, '0');
+  const ms = istDate.getMilliseconds().toString().padStart(3, '0');
+
+  return `${istDate.getFullYear()}-${pad(istDate.getMonth() + 1)}-${pad(istDate.getDate())} ${pad(istDate.getHours())}:${pad(istDate.getMinutes())}:${pad(istDate.getSeconds())}.${ms}`;
+}
 
   return (
     // <div className="p-4">
@@ -369,15 +382,18 @@ const DetailedTransactionsTable: React.FC = () => {
                                   <td className="px-2 py-1 border text-right">₹{d.VAmt.toFixed(2)}</td>
                                   <td className="px-2 py-1 border text-right">₹{d.AdjAmt.toFixed(2)}</td>
                                   <td className="px-2 py-1 border">{d.EditMode}</td>
-                                  <td className="px-2 py-1 border">{new Date(d.EditUpdate).toLocaleString('en-IN',{
+                               
+                                {/*<td className="px-2 py-1 border">{new Date(d.EditUpdate).toLocaleDateString('en-GB',{
                                      day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      hour12: true,
-                                  })}</td>
+      hour12: false,
+                                  })}</td> */}
+                                 <td className="px-2 py-1 border">{d.EditUpdate.toString()}</td>
+                                 
                                 </tr>
                               ))}
                             </tbody>
