@@ -1,3 +1,151 @@
+/* app/user/layout.tsx */
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ThemeToggle from '@/components/ThemeToggle';
+
+interface UserDashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function UserDashboardLayout({ children }: UserDashboardLayoutProps) {
+  const router = useRouter();
+  const [userName, setUserName] = useState<string>('');
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [loadingStatus, setLoadingStatus] = useState<boolean>(true);
+  const [isDark, setIsDark] = useState<boolean>(false);
+
+  // Dark mode detection
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Simulate loading status
+  useEffect(() => {
+    setLoadingStatus(false);
+  }, []);
+
+  // Load userName
+  useEffect(() => {
+    const raw = localStorage.getItem('user');
+    if (raw) {
+      try {
+        const user = JSON.parse(raw);
+        setUserName(user.username || user.userName || '');
+      } catch {}
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/logout', { method: 'POST' });
+      if (!res.ok) throw new Error();
+      localStorage.removeItem('user');
+      toast.success('Logged out');
+      router.push('/login');
+    } catch {
+      toast.error('Logout failed');
+    }
+  };
+
+  if (loadingStatus) return null;
+
+  const navLinks = [
+    { href: '/user', label: 'Dashboard' },
+    { href: '/user/user-transection-summary', label: 'Transaction Summary' },
+    { href: '/user/month-trasactions', label: 'Monthly Transactions' },
+    { href: '/user/outstanding', label: 'Outstanding' },
+    { href: '/user/ledger', label: 'Ledger' },
+    { href: '/user/stocks', label: 'Stock' },
+  ];
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+      <ToastContainer position="top-right" autoClose={3000} />
+
+      {/* Header */}
+      <header className="sticky top-0 w-full bg-white dark:bg-gray-900 shadow z-20 p-4 flex items-center justify-between">
+        <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+          {userName ? `${userName} Dashboard` : 'User Dashboard'}
+        </h1>
+        <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          <button
+            onClick={() => setSidebarOpen(o => !o)}
+            className="md:hidden text-gray-700 dark:text-gray-200 border rounded px-2 py-1"
+          >
+            ☰
+          </button>
+          <nav className="hidden md:flex gap-4">
+            <Link href="/user" className="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200">
+              Dashboard
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200"
+            >
+              Logout
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <div className="flex flex-1 overflow-hidden">
+        {/* Mobile overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* Sidebar */}
+        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static top-0 left-0 h-full w-64 bg-green-600 dark:bg-gray-900 text-white p-6 transform transition-transform z-40 overflow-y-auto max-h-screen`}>
+          <button
+            className="text-white mb-4 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          >
+            ✕ Close
+          </button>
+          <nav className="flex flex-col gap-4">
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded p-2 hover:bg-green-500 dark:hover:bg-gray-800"
+                onClick={() => setSidebarOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <button
+              onClick={() => { handleLogout(); setSidebarOpen(false); }}
+              className="mt-4 bg-red-500 hover:bg-red-600 rounded p-2"
+            >
+              Logout
+            </button>
+          </nav>
+        </aside>
+
+        {/* Main content */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900 transition-colors max-h-screen">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+
+
 // 'use client';
 
 // import React, { useState, useEffect } from 'react';
@@ -192,147 +340,147 @@
 
 
 /* app/user/layout.tsx */
-'use client';
+// 'use client';
 
-import React, { useState, useEffect, Fragment } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ThemeToggle from '@/components/ThemeToggle';
+// import React, { useState, useEffect, Fragment } from 'react';
+// import Link from 'next/link';
+// import { useRouter } from 'next/navigation';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+// import ThemeToggle from '@/components/ThemeToggle';
 
-interface UserDashboardLayoutProps {
-  children: React.ReactNode;
-}
+// interface UserDashboardLayoutProps {
+//   children: React.ReactNode;
+// }
 
-export default function UserDashboardLayout({ children }: UserDashboardLayoutProps) {
-  const router = useRouter();
-  const [userName, setUserName] = useState<string>('');
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [dbConnected, setDbConnected] = useState<boolean | null>(null);
-  const [loadingStatus, setLoadingStatus] = useState<boolean>(true);
+// export default function UserDashboardLayout({ children }: UserDashboardLayoutProps) {
+//   const router = useRouter();
+//   const [userName, setUserName] = useState<string>('');
+//   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+//   const [dbConnected, setDbConnected] = useState<boolean | null>(null);
+//   const [loadingStatus, setLoadingStatus] = useState<boolean>(true);
 
-  // load connection status
-  useEffect(() => {
-    fetch('/api/connect-local/status')
-      .then(res => res.json())
-      .then(data => setDbConnected(data.connected ?? false))
-      .catch(() => setDbConnected(false))
-      .finally(() => setLoadingStatus(false));
-  }, []);
+//   // load connection status
+//   useEffect(() => {
+//     fetch('/api/connect-local/status')
+//       .then(res => res.json())
+//       .then(data => setDbConnected(data.connected ?? false))
+//       .catch(() => setDbConnected(false))
+//       .finally(() => setLoadingStatus(false));
+//   }, []);
 
-  // load userName
-  useEffect(() => {
-    const raw = localStorage.getItem('user');
-    if (raw) {
-      try {
-        const user = JSON.parse(raw);
-        setUserName(user.username || user.userName || '');
-      } catch {
-        // ignore
-      }
-    }
-  }, []);
+//   // load userName
+//   useEffect(() => {
+//     const raw = localStorage.getItem('user');
+//     if (raw) {
+//       try {
+//         const user = JSON.parse(raw);
+//         setUserName(user.username || user.userName || '');
+//       } catch {
+//         // ignore
+//       }
+//     }
+//   }, []);
 
-  const handleLogout = async () => {
-    try {
-      const res = await fetch('/api/logout', { method: 'POST' });
-      if (!res.ok) throw new Error('Logout failed');
-      localStorage.removeItem('user');
-      toast.success('Logged out');
-      router.push('/login');
-    } catch (e) {
-      console.error(e);
-      toast.error('Logout error');
-    }
-  };
+//   const handleLogout = async () => {
+//     try {
+//       const res = await fetch('/api/logout', { method: 'POST' });
+//       if (!res.ok) throw new Error('Logout failed');
+//       localStorage.removeItem('user');
+//       toast.success('Logged out');
+//       router.push('/login');
+//     } catch (e) {
+//       console.error(e);
+//       toast.error('Logout error');
+//     }
+//   };
 
-  if (loadingStatus) return null;
+//   if (loadingStatus) return null;
 
-  const navLinks = [
-    { href: '/user', label: 'Dashboard' },
-    // { href: '/user/profile', label: 'Profile' },
-    { href: '/user/user-transection-summary', label: 'Transaction Summary' },
-    { href: '/user/month-trasactions', label: 'Monthly Transactions' },
-    { href: '/user/outstanding', label: 'Outstanding' },
-    { href: '/user/ledger', label: 'Ledger' },
-    { href: '/user/stocks', label: 'Stock' },
-  ];
+//   const navLinks = [
+//     { href: '/user', label: 'Dashboard' },
+//     // { href: '/user/profile', label: 'Profile' },
+//     { href: '/user/user-transection-summary', label: 'Transaction Summary' },
+//     { href: '/user/month-trasactions', label: 'Monthly Transactions' },
+//     { href: '/user/outstanding', label: 'Outstanding' },
+//     { href: '/user/ledger', label: 'Ledger' },
+//     { href: '/user/stocks', label: 'Stock' },
+//   ];
 
-  return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-      <ToastContainer position="top-right" />
+//   return (
+//     <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+//       <ToastContainer position="top-right" />
 
-      {/* Header */}
-      <header className="sticky top-0 w-full bg-white dark:bg-gray-900 shadow z-20 p-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-          {userName ? `${userName} - Dashboard` : 'User Dashboard'}
-        </h1>
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setSidebarOpen(prev => !prev)}
-            className="text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 px-3 py-1 rounded"
-          >
-            ☰
-          </button>
-        </div>
-        {/* Desktop nav */}
-        <nav className="hidden md:flex gap-4">
-          <Link href="/user" className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-200">
-            Dashboard
-          </Link>
-          {/* <Link href="/user/profile" className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-200">
-            Profile
-          </Link> */}
-          <button
-            onClick={handleLogout}
-            className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-200"
-          >
-            Logout
-          </button>
-        </nav>
-      </header>
+//       {/* Header */}
+//       <header className="sticky top-0 w-full bg-white dark:bg-gray-900 shadow z-20 p-4 flex items-center justify-between">
+//         <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+//           {userName ? `${userName} - Dashboard` : 'User Dashboard'}
+//         </h1>
+//         {/* Mobile menu button */}
+//         <div className="md:hidden">
+//           <button
+//             onClick={() => setSidebarOpen(prev => !prev)}
+//             className="text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 px-3 py-1 rounded"
+//           >
+//             ☰
+//           </button>
+//         </div>
+//         {/* Desktop nav */}
+//         <nav className="hidden md:flex gap-4">
+//           <Link href="/user" className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-200">
+//             Dashboard
+//           </Link>
+//           {/* <Link href="/user/profile" className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-200">
+//             Profile
+//           </Link> */}
+//           <button
+//             onClick={handleLogout}
+//             className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-200"
+//           >
+//             Logout
+//           </button>
+//         </nav>
+//       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        {sidebarOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
-        )}
+//       <div className="flex flex-1 overflow-hidden">
+//         {/* Sidebar */}
+//         {sidebarOpen && (
+//           <div className="fixed inset-0 bg-black bg-opacity-40 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
+//         )}
 
-        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static top-0 left-0 h-full w-64 bg-blue-600 dark:bg-gray-900 text-white p-6 transform transition-transform z-40`}>          
-          <button className="text-white mb-4 md:hidden" onClick={() => setSidebarOpen(false)}>
-            ✕ Close
-          </button>
-          <nav className="flex flex-col gap-4">
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="hover:bg-blue-500 dark:hover:bg-gray-800 rounded p-2"
-                onClick={() => setSidebarOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <button
-              onClick={() => { handleLogout(); setSidebarOpen(false); }}
-              className="mt-4 bg-red-500 hover:bg-red-600 rounded p-2"
-            >
-              Logout
-            </button>
-          </nav>
-        </aside>
+//         <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static top-0 left-0 h-full w-64 bg-blue-600 dark:bg-gray-900 text-white p-6 transform transition-transform z-40`}>          
+//           <button className="text-white mb-4 md:hidden" onClick={() => setSidebarOpen(false)}>
+//             ✕ Close
+//           </button>
+//           <nav className="flex flex-col gap-4">
+//             {navLinks.map(link => (
+//               <Link
+//                 key={link.href}
+//                 href={link.href}
+//                 className="hover:bg-blue-500 dark:hover:bg-gray-800 rounded p-2"
+//                 onClick={() => setSidebarOpen(false)}
+//               >
+//                 {link.label}
+//               </Link>
+//             ))}
+//             <button
+//               onClick={() => { handleLogout(); setSidebarOpen(false); }}
+//               className="mt-4 bg-red-500 hover:bg-red-600 rounded p-2"
+//             >
+//               Logout
+//             </button>
+//           </nav>
+//         </aside>
 
-        {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8 transition-colors">
-          <ThemeToggle />
-          {children}
-        </main>
-      </div>
-    </div>
-  );
-}
+//         {/* Main content */}
+//         <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8 transition-colors">
+//           <ThemeToggle />
+//           {children}
+//         </main>
+//       </div>
+//     </div>
+//   );
+// }
 
 
 
