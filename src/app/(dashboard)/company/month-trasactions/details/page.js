@@ -6,7 +6,7 @@ import DetailsPage from '@/components/DetailsPage'; // Import client component
 export default function Page() {
     return (
         <Suspense fallback={<p className="p-4">Loading details...</p>}>
-            <DetailsPage />
+            <DetailsPage className="page" />
         </Suspense>
     );
 }

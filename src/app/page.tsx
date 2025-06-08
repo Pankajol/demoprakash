@@ -1,53 +1,32 @@
-// // app/page.tsx
-// "use Client"
-// import Link from 'next/link';
-// import { ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-
-// const LandingPage: React.FC = () => {
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex flex-col items-center justify-center text-white p-6">
-//       <header className="text-center">
-//         <h1 className="text-5xl font-extrabold mb-4">PharmaTech Solutions</h1>
-//         <p className="text-xl">Innovative software solutions for the pharmaceutical industry</p>
-//       </header>
-//       <main className="mt-8 text-center">
-//         <h2 className="text-3xl font-bold mb-6">Transforming Pharma with Technology</h2>
-//         <p className="mb-10 max-w-xl mx-auto">
-//           Our comprehensive suite of tools is designed to streamline every aspect of your pharmaceutical workflow.
-//         </p>
-//         <div className="flex flex-col md:flex-row gap-4 justify-center">
-//           <Link href="/register" className="px-6 py-3 bg-white text-blue-600 rounded-lg shadow-md hover:bg-gray-200 transition">
-//             Register
-//           </Link>
-//           <Link href="/login" className="px-6 py-3 bg-white text-blue-600 rounded-lg shadow-md hover:bg-gray-200 transition">
-//             Login
-//           </Link>
-//         </div>
-//       </main>
-//       <footer className="mt-12">
-//         <p className="text-sm">&copy; 2025 PharmaTech Solutions. All rights reserved.</p>
-//       </footer>
-//       <ToastContainer position="top-right" autoClose={3000} />
-//     </div>
-//   );
-// };
-
-// export default LandingPage;
-
-
-
-
+/* app/landing/page.tsx */
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Importer from '@/components/Importer';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const LandingPage: React.FC = () => {
+  const [isDark, setIsDark] = useState<boolean>(false);
+
+  // Theme detection
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex flex-col items-center justify-center text-white p-6 space-y-8">
+    <div className={`min-h-screen flex flex-col items-center justify-center p-6 space-y-8 transition-colors ${
+      isDark
+        ? 'bg-gray-900 text-gray-100'
+        : 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
+    }`}>
+      <ToastContainer position="top-right" autoClose={3000} />
+
       <header className="text-center space-y-2">
         <h1 className="text-5xl font-extrabold">PharmaTech Solutions</h1>
         <p className="text-xl">Innovative software solutions for the pharmaceutical industry</p>
@@ -59,16 +38,26 @@ const LandingPage: React.FC = () => {
           Our comprehensive suite of tools is designed to streamline every aspect of your pharmaceutical workflow.
         </p>
         <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <Link href="/register" className="px-6 py-3 bg-white text-blue-600 rounded-lg shadow-md hover:bg-gray-200 transition">
+          <Link
+            href="/register"
+            className={`px-6 py-3 rounded-lg shadow-md transition ${
+              isDark ? 'bg-gray-800 text-white hover:bg-gray-700' : 'bg-white text-blue-600 hover:bg-gray-200'
+            }`}
+          >
             Register
           </Link>
-          <Link href="/login" className="px-6 py-3 bg-white text-blue-600 rounded-lg shadow-md hover:bg-gray-200 transition">
+          <Link
+            href="/login"
+            className={`px-6 py-3 rounded-lg shadow-md transition ${
+              isDark ? 'bg-gray-800 text-white hover:bg-gray-700' : 'bg-white text-blue-600 hover:bg-gray-200'
+            }`}
+          >
             Login
           </Link>
         </div>
       </main>
 
-      {/* Importer component for CSV year import */}
+      {/* Optional CSV importer */}
       {/* <section className="w-full max-w-md">
         <Importer />
       </section> */}
@@ -76,15 +65,62 @@ const LandingPage: React.FC = () => {
       <footer>
         <p className="text-sm">&copy; 2025 PharmaTech Solutions. All rights reserved.</p>
       </footer>
-
-      {/* Toast notifications container */}
-      <ToastContainer />
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
 
 export default LandingPage;
+
+
+
+
+// 'use client';
+
+// import Link from 'next/link';
+// import Importer from '@/components/Importer';
+// import { ToastContainer } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+
+// const LandingPage: React.FC = () => {
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex flex-col items-center justify-center text-white p-6 space-y-8">
+//       <header className="text-center space-y-2">
+//         <h1 className="text-5xl font-extrabold">PharmaTech Solutions</h1>
+//         <p className="text-xl">Innovative software solutions for the pharmaceutical industry</p>
+//       </header>
+
+//       <main className="text-center space-y-6">
+//         <h2 className="text-3xl font-bold">Transforming Pharma with Technology</h2>
+//         <p className="max-w-xl mx-auto">
+//           Our comprehensive suite of tools is designed to streamline every aspect of your pharmaceutical workflow.
+//         </p>
+//         <div className="flex flex-col md:flex-row gap-4 justify-center">
+//           <Link href="/register" className="px-6 py-3 bg-white text-blue-600 rounded-lg shadow-md hover:bg-gray-200 transition">
+//             Register
+//           </Link>
+//           <Link href="/login" className="px-6 py-3 bg-white text-blue-600 rounded-lg shadow-md hover:bg-gray-200 transition">
+//             Login
+//           </Link>
+//         </div>
+//       </main>
+
+//       {/* Importer component for CSV year import */}
+//       {/* <section className="w-full max-w-md">
+//         <Importer />
+//       </section> */}
+
+//       <footer>
+//         <p className="text-sm">&copy; 2025 PharmaTech Solutions. All rights reserved.</p>
+//       </footer>
+
+//       {/* Toast notifications container */}
+//       <ToastContainer />
+//       <ToastContainer position="top-right" autoClose={3000} />
+//     </div>
+//   );
+// };
+
+// export default LandingPage;
 
 
 

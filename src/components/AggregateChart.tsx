@@ -316,6 +316,30 @@ export default function AggregateChart({ availableYears }: AggregateChartProps) 
             value={selectedYears}
             onChange={setSelectedYears}
             placeholder="Select year(s)..."
+            styles={{
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? 'var(--background)' : 'var(--background)',
+      borderColor: state.isFocused ? '#3b82f6' : '#e5e7eb',
+      color: 'var(--foreground)',
+      boxShadow: 'none',
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: 'var(--background)',
+      color: 'var(--foreground)',
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? '#3b82f6' : 'transparent',
+      color: state.isFocused ? '#ffffff' : 'var(--foreground)',
+      cursor: 'pointer',
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'var(--foreground)',
+    }),
+  }}
           />
         </div>
         {/* Type Picker */}
@@ -328,6 +352,30 @@ export default function AggregateChart({ availableYears }: AggregateChartProps) 
             onChange={setSelectedTypes}
             placeholder="Select type(s)..."
             isDisabled={!data.length}
+            styles={{
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? 'var(--background)' : 'var(--background)',
+      borderColor: state.isFocused ? '#3b82f6' : '#e5e7eb',
+      color: 'var(--foreground)',
+      boxShadow: 'none',
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: 'var(--background)',
+      color: 'var(--foreground)',
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? '#3b82f6' : 'transparent',
+      color: state.isFocused ? '#ffffff' : 'var(--foreground)',
+      cursor: 'pointer',
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: 'var(--foreground)',
+    }),
+  }}
           />
         </div>
       </div>
