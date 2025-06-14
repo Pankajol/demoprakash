@@ -343,7 +343,7 @@ const LoginPage: React.FC = () => {
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* <form onSubmit={handleSubmit} className="space-y-4">
           {loginType === 'company' ? (
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
@@ -392,7 +392,64 @@ const LoginPage: React.FC = () => {
           >
             {loading ? 'Logging in...' : `Login as ${loginType.charAt(0).toUpperCase() + loginType.slice(1)}`}
           </button>
-        </form>
+        </form> */}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+  {loginType === 'company' ? (
+    <div>
+      <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+      <input
+        id="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Enter your email"
+        disabled={loading}
+        className="mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  ) : (
+    <div>
+      <label htmlFor="username" className="block text-sm font-medium mb-1">Username</label>
+      <input
+        id="username"
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Enter your username"
+        disabled={loading}
+        className="mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  )}
+
+  <div>
+    <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
+    <input
+      id="password"
+      type="password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="Enter your password"
+      disabled={loading}
+      className="mt-1 w-full px-3 py-2 border border-gray-700 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    {/* <div className="mt-1 text-sm text-right">
+      <Link href="/forgot-password" className="text-blue-600 hover:underline">
+        Forgot Password?
+      </Link>
+    </div> */}
+  </div>
+
+  <button
+    type="submit"
+    disabled={loading}
+    className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    {loading ? 'Logging in...' : `Login as ${loginType.charAt(0).toUpperCase() + loginType.slice(1)}`}
+  </button>
+</form>
+
 
         <p className="mt-4 text-center text-sm">
           Don't have an account?{' '}

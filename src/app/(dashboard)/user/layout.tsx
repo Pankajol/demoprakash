@@ -59,9 +59,11 @@ export default function UserDashboardLayout({ children }: UserDashboardLayoutPro
   if (loadingStatus) return null;
 
   const navLinks = [
-    { href: '/user', label: 'Dashboard' },
-    { href: '/user/user-transection-summary', label: 'Transaction Summary' },
-    { href: '/user/month-trasactions', label: 'Monthly Transactions' },
+    // { href: '/user', label: 'Dashboard' },
+     { href: '/user/reset-password', label: 'Reset-Password' },
+
+    // { href: '/user/user-transection-summary', label: 'Transaction Summary' },
+    // { href: '/user/month-trasactions', label: 'Monthly Transactions' },
     { href: '/user/outstanding', label: 'Outstanding' },
     { href: '/user/ledger', label: 'Ledger' },
     { href: '/user/stocks', label: 'Stock' },

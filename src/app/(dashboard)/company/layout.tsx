@@ -220,11 +220,13 @@ const CompanyDashboardLayout: React.FC<CompanyDashboardLayoutProps> = ({ childre
   const navLinks = [
     { href: '/company', label: 'Dashboard' },
     { href: '/company/user-registration', label: 'Register User' },
+    { href: '/company/reset-password', label: 'Reset-Password' },
     { href: '/company/user-transection-summary', label: 'Transaction Summary' },
     { href: '/company/month-trasactions', label: 'Monthly Transactions' },
     { href: '/company/outstanding', label: 'Outstanding' },
     { href: '/company/ledger', label: 'Ledger' },
     { href: '/company/stocks', label: 'Stock' },
+   
     { href: '/company/inward-rates', label: 'Inward Rates' },
   ];
 
